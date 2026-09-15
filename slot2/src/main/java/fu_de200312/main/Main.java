@@ -54,5 +54,35 @@ public class Main {
         Employee deleted = dao.findById(employee.getId());
 
         System.out.println("Sau khi xoa: " + deleted);
+        // TODO 9 - Test duplicate email
+
+        Employee employee1 = new Employee(
+                "Nguyen Van B",
+                "duplicate@gmail.com",
+                new BigDecimal("1800.00"),
+                Gender.MALE,
+                LocalDate.of(2024, 1, 1),
+                true
+        );
+
+        Employee employee2 = new Employee(
+                "Nguyen Van C",
+                "duplicate@gmail.com",
+                new BigDecimal("1900.00"),
+                Gender.FEMALE,
+                LocalDate.of(2024, 2, 1),
+                true
+        );
+
+        dao.save(employee1);
+
+        try {
+            dao.save(employee2);
+            System.out.println("Loi: Email trung van duoc them!");
+        } catch (Exception e) {
+            System.out.println("Email trung bi chan: " + e.getClass().getSimpleName());
+        }
+
+        dao.delete(employee1.getId());
     }
 }
