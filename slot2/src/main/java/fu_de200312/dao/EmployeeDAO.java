@@ -27,4 +27,27 @@ public class EmployeeDAO {
             em.close();
         }
     }
+
+    public Employee findById(Long id) {
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            return em.find(Employee.class, id);
+        } finally {
+            em.close();
+        }
+    }
+
+    public java.util.List<Employee> findAll() {
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            return em.createQuery(
+                    "SELECT e FROM Employee e",
+                    Employee.class
+            ).getResultList();
+        } finally {
+            em.close();
+        }
+    }
 }
