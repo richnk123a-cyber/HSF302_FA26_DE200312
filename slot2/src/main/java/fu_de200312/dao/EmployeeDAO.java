@@ -1,4 +1,4 @@
-﻿package fu_de200312.dao;
+package fu_de200312.dao;
 
 import fu_de200312.pojo.Employee;
 import jakarta.persistence.EntityManager;
@@ -90,6 +90,28 @@ public class EmployeeDAO {
             em.getTransaction().begin();
 
             e = em.merge(e);
+
+            em.getTransaction().commit();
+        } catch (Exception ex) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            throw ex;
+        } finally {
+            em.close();
+        }
+    }
+    public void delete(Long id) {
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            em.getTransaction().begin();
+
+            Employee e = em.find(Employee.class, id);
+
+            if (e != null) {
+                em.remove(e);
+            }
 
             em.getTransaction().commit();
         } catch (Exception ex) {
