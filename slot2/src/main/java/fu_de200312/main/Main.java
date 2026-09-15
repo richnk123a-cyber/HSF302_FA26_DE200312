@@ -1,4 +1,4 @@
-﻿package fu_de200312.main;
+package fu_de200312.main;
 
 import fu_de200312.dao.EmployeeDAO;
 import fu_de200312.pojo.Employee;
@@ -23,10 +23,13 @@ public class Main {
                 true
         );
 
+        // Entity đang ở trạng thái New/Transient
         dao.save(employee);
 
         System.out.println("CREATE:");
         System.out.println(employee);
+
+        // Sau save(), EntityManager đã đóng -> entity Detached
 
         // READ
         Employee found = dao.findById(employee.getId());
@@ -37,6 +40,7 @@ public class Main {
         // UPDATE
         found.setSalary(new BigDecimal("2000.00"));
 
+        // found đang Detached trước khi gọi update()
         dao.update(found);
 
         System.out.println("\nUPDATE:");
@@ -51,6 +55,7 @@ public class Main {
 
         System.out.println("\nDELETE:");
 
+        // Entity đã bị Removed trong transaction
         Employee deleted = dao.findById(employee.getId());
 
         System.out.println("Sau khi xoa: " + deleted);
