@@ -83,4 +83,22 @@ public class EmployeeDAO {
             em.close();
         }
     }
+    public void update(Employee e) {
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            em.getTransaction().begin();
+
+            e = em.merge(e);
+
+            em.getTransaction().commit();
+        } catch (Exception ex) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            throw ex;
+        } finally {
+            em.close();
+        }
+    }
 }
