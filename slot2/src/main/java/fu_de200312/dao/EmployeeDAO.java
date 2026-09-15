@@ -50,4 +50,37 @@ public class EmployeeDAO {
             em.close();
         }
     }
+    public Employee findByEmail(String email) {
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            return em.createQuery(
+                            "SELECT e FROM Employee e WHERE e.email = :email",
+                            Employee.class
+                    )
+                    .setParameter("email", email)
+                    .getResultStream()
+                    .findFirst()
+                    .orElse(null);
+        } finally {
+            em.close();
+        }
+    }
+
+    public java.util.List<Employee> findBySalaryGreaterThan(
+            java.math.BigDecimal salary) {
+
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            return em.createQuery(
+                            "SELECT e FROM Employee e WHERE e.salary > :salary",
+                            Employee.class
+                    )
+                    .setParameter("salary", salary)
+                    .getResultList();
+        } finally {
+            em.close();
+        }
+    }
 }
