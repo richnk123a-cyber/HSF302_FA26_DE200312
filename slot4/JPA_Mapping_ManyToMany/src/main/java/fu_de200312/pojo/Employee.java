@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -46,7 +47,8 @@ public class Employee {
     public Employee() {
     }
 
-    public Employee(String fullName, String email, BigDecimal salary, Gender gender, LocalDate hireDate, boolean active) {
+    public Employee(String fullName, String email, BigDecimal salary,
+                    Gender gender, LocalDate hireDate, boolean active) {
         this.fullName = fullName;
         this.email = email;
         this.salary = salary;
@@ -117,6 +119,32 @@ public class Employee {
             return 0;
         }
         return (int) ChronoUnit.YEARS.between(hireDate, LocalDate.now());
+    }
+
+    /*
+     * TODO 5.4:
+     * Dùng email làm business key thay vì id.
+     * Không dùng id vì id được Hibernate sinh tự động và có thể thay đổi
+     * từ null -> giá trị sau khi entity được persist, điều này có thể
+     * làm sai hành vi của HashSet/HashMap.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (!(o instanceof Employee)) {
+            return false;
+        }
+
+        Employee employee = (Employee) o;
+        return Objects.equals(email, employee.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(email);
     }
 
     @Override

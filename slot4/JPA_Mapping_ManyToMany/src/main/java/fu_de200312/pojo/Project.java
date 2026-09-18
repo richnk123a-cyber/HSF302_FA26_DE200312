@@ -3,8 +3,9 @@ package fu_de200312.pojo;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Set;
 import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "projects")
@@ -90,6 +91,32 @@ public class Project {
     @ManyToMany(mappedBy = "projects")
     private Set<Employee> employees = new HashSet<>();
 
+    /*
+     * TODO 5.4:
+     * Dùng projectCode làm business key thay vì id.
+     * Không dùng id vì id được Hibernate sinh tự động và có thể thay đổi
+     * từ null -> giá trị sau khi entity được persist, điều này có thể
+     * làm sai hành vi của HashSet/HashMap.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (!(o instanceof Project)) {
+            return false;
+        }
+
+        Project project = (Project) o;
+        return Objects.equals(projectCode, project.projectCode);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(projectCode);
+    }
+
     @Override
     public String toString() {
         return "Project{" +
@@ -102,4 +129,3 @@ public class Project {
                 '}';
     }
 }
-
