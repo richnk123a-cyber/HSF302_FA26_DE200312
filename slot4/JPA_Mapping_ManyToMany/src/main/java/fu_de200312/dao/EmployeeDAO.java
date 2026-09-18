@@ -1,11 +1,13 @@
 package fu_de200312.dao;
 
 import fu_de200312.pojo.Employee;
+import fu_de200312.pojo.Project;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 
 public class EmployeeDAO {
+
     private final EntityManagerFactory emf =
             Persistence.createEntityManagerFactory("hsf302FU");
 
@@ -50,6 +52,7 @@ public class EmployeeDAO {
             em.close();
         }
     }
+
     public Employee findByEmail(String email) {
         EntityManager em = emf.createEntityManager();
 
@@ -83,6 +86,7 @@ public class EmployeeDAO {
             em.close();
         }
     }
+
     public void update(Employee e) {
         EntityManager em = emf.createEntityManager();
 
@@ -101,6 +105,7 @@ public class EmployeeDAO {
             em.close();
         }
     }
+
     public void delete(Long id) {
         EntityManager em = emf.createEntityManager();
 
@@ -114,6 +119,45 @@ public class EmployeeDAO {
             }
 
             em.getTransaction().commit();
+        } catch (Exception ex) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            throw ex;
+        } finally {
+            em.close();
+        }
+    }
+
+    // TODO 5.6:
+    // Tìm Employee và Project trong cùng một transaction,
+    // sau đó gọi helper method assignToProject() để cập nhật
+    // quan hệ ở cả hai phía.
+    public void assignEmployeeToProject(Long employeeId, Long projectId) {
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            em.getTransaction().begin();
+
+            Employee employee = em.find(Employee.class, employeeId);
+            Project project = em.find(Project.class, projectId);
+
+            if (employee == null) {
+                throw new IllegalArgumentException(
+                        "Employee not found: " + employeeId
+                );
+            }
+
+            if (project == null) {
+                throw new IllegalArgumentException(
+                        "Project not found: " + projectId
+                );
+            }
+
+            employee.assignToProject(project);
+
+            em.getTransaction().commit();
+
         } catch (Exception ex) {
             if (em.getTransaction().isActive()) {
                 em.getTransaction().rollback();
