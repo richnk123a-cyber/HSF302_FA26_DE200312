@@ -1,8 +1,12 @@
 package fu_de200312.main;
 
+import fu_de200312.dao.DepartmentDAO;
 import fu_de200312.dao.EmployeeDAO;
+import fu_de200312.dao.ProjectDAO;
+import fu_de200312.pojo.Department;
 import fu_de200312.pojo.Employee;
 import fu_de200312.pojo.Gender;
+import fu_de200312.pojo.Project;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -11,83 +15,118 @@ public class Main {
 
     public static void main(String[] args) {
 
-        EmployeeDAO dao = new EmployeeDAO();
+        EmployeeDAO employeeDAO = new EmployeeDAO();
+        ProjectDAO projectDAO = new ProjectDAO();
+        DepartmentDAO departmentDAO = new DepartmentDAO();
 
-        // CREATE
-        Employee employee = new Employee(
-                "Nguyen Van A",
-                "nguyenvana@gmail.com",
-                new BigDecimal("1500.00"),
-                Gender.MALE,
-                LocalDate.of(2023, 1, 10),
-                true
+        Department department = new Department(
+                "IT Department",
+                "Da Nang"
         );
 
-        // Entity đang ở trạng thái New/Transient
-        dao.save(employee);
-
-        System.out.println("CREATE:");
-        System.out.println(employee);
-
-        // Sau save(), EntityManager đã đóng -> entity Detached
-
-        // READ
-        Employee found = dao.findById(employee.getId());
-
-        System.out.println("\nREAD:");
-        System.out.println(found);
-
-        // UPDATE
-        found.setSalary(new BigDecimal("2000.00"));
-
-        // found đang Detached trước khi gọi update()
-        dao.update(found);
-
-        System.out.println("\nUPDATE:");
-        System.out.println(dao.findById(employee.getId()));
-
-        // READ ALL
-        System.out.println("\nREAD ALL:");
-        dao.findAll().forEach(System.out::println);
-
-        // DELETE
-        dao.delete(employee.getId());
-
-        System.out.println("\nDELETE:");
-
-        // Entity đã bị Removed trong transaction
-        Employee deleted = dao.findById(employee.getId());
-
-        System.out.println("Sau khi xoa: " + deleted);
-        // TODO 9 - Test duplicate email
+        departmentDAO.save(department);
 
         Employee employee1 = new Employee(
-                "Nguyen Van B",
-                "duplicate@gmail.com",
-                new BigDecimal("1800.00"),
+                "Nguyen Van A",
+                "employee1@gmail.com",
+                new BigDecimal("1500.00"),
                 Gender.MALE,
-                LocalDate.of(2024, 1, 1),
+                LocalDate.of(2022, 1, 10),
                 true
         );
 
         Employee employee2 = new Employee(
-                "Nguyen Van C",
-                "duplicate@gmail.com",
-                new BigDecimal("1900.00"),
+                "Tran Thi B",
+                "employee2@gmail.com",
+                new BigDecimal("1800.00"),
                 Gender.FEMALE,
-                LocalDate.of(2024, 2, 1),
+                LocalDate.of(2023, 3, 15),
                 true
         );
 
-        dao.save(employee1);
+        Employee employee3 = new Employee(
+                "Le Van C",
+                "employee3@gmail.com",
+                new BigDecimal("2000.00"),
+                Gender.MALE,
+                LocalDate.of(2024, 5, 20),
+                true
+        );
 
-        try {
-            dao.save(employee2);
-            System.out.println("Loi: Email trung van duoc them!");
-        } catch (Exception e) {
-            System.out.println("Email trung bi chan: " + e.getClass().getSimpleName());
-        }
+        employee1.setDepartment(department);
+        employee2.setDepartment(department);
+        employee3.setDepartment(department);
 
-        dao.delete(employee1.getId());
+        employeeDAO.save(employee1);
+        employeeDAO.save(employee2);
+        employeeDAO.save(employee3);
+
+        Project projectA = new Project(
+                "PRJ-A",
+                "Project A",
+                new BigDecimal("100000.00"),
+                LocalDate.of(2025, 1, 1),
+                LocalDate.of(2025, 12, 31)
+        );
+
+        Project projectB = new Project(
+                "PRJ-B",
+                "Project B",
+                new BigDecimal("150000.00"),
+                LocalDate.of(2025, 2, 1),
+                null
+        );
+
+        projectDAO.save(projectA);
+        projectDAO.save(projectB);
+
+        // NV1 tham gia Project A + Project B
+        employeeDAO.assignEmployeeToProject(
+                employee1.getId(),
+                projectA.getId()
+        );
+
+        employeeDAO.assignEmployeeToProject(
+                employee1.getId(),
+                projectB.getId()
+        );
+
+        // NV2 tham gia Project B
+        employeeDAO.assignEmployeeToProject(
+                employee2.getId(),
+                projectB.getId()
+        );
+
+        // NV3 tham gia Project A
+        employeeDAO.assignEmployeeToProject(
+                employee3.getId(),
+                projectA.getId()
+        );
+
+
+        System.out.println(
+                "===== DANH SACH PROJECT CUA TUNG NHAN VIEN ====="
+        );
+
+        employeeDAO.findAllWithProjects().forEach(employee -> {
+
+            System.out.println(
+                    employee.getFullName()
+                            + " (" + employee.getEmail() + ")"
+            );
+
+            System.out.println("Projects:");
+
+            employee.getProjects().forEach(project ->
+                    System.out.println(
+                            "  - "
+                                    + project.getProjectCode()
+                                    + " | "
+                                    + project.getProjectName()
+                    )
+            );
+
+            System.out.println();
+        });
     }
 }

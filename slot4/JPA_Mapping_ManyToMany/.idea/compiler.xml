@@ -7,6 +7,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="Chapter1-JPA-Ex1" />
+        <module name="JPA_Mapping_ManyToMany" />
       </profile>
     </annotationProcessing>
   </component>

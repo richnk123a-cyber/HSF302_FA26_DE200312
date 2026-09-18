@@ -36,6 +36,13 @@ public class Employee {
     @Transient
     private int yearsOfService;
 
+    // Quan hệ ManyToOne với Department từ bài trước
+    @ManyToOne
+    @JoinColumn(name = "department_id", nullable = false)
+    private fu_de200312.pojo.Department department;
+
+    // TODO 5.2:
+    // Employee là owning side của quan hệ ManyToMany.
     @ManyToMany
     @JoinTable(
             name = "employee_project",
@@ -113,10 +120,19 @@ public class Employee {
         this.active = active;
     }
 
+    public Department getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
+    }
+
     public Set<Project> getProjects() {
         return projects;
     }
 
+    // Tính số năm làm việc, không lưu trong DB
     public int getYearsOfService() {
         if (hireDate == null) {
             return 0;
@@ -124,10 +140,8 @@ public class Employee {
         return (int) ChronoUnit.YEARS.between(hireDate, LocalDate.now());
     }
 
-    /*
-     * TODO 5.5:
-     * Phân công Employee vào Project ở cả hai phía của quan hệ.
-     */
+    // TODO 5.5:
+    // Thêm Employee vào cả hai phía của quan hệ ManyToMany.
     public void assignToProject(Project p) {
         if (p == null) {
             return;
@@ -137,12 +151,10 @@ public class Employee {
         p.getEmployees().add(this);
     }
 
-    /*
-     * TODO 5.4:
-     * Dùng email làm business key thay vì id.
-     * Không dùng id vì id được Hibernate sinh tự động và có thể thay đổi
-     * từ null -> giá trị sau khi entity được persist.
-     */
+    // TODO 5.4:
+    // Dùng email làm business key, không dùng id.
+    // id do Hibernate tự sinh và có thể thay đổi từ null -> giá trị
+    // sau khi persist, gây vấn đề khi dùng HashSet/HashMap.
     @Override
     public boolean equals(Object o) {
         if (this == o) {

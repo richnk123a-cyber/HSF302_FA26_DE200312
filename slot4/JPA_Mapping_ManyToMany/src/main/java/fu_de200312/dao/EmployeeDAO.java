@@ -167,4 +167,16 @@ public class EmployeeDAO {
             em.close();
         }
     }
+    public java.util.List<Employee> findAllWithProjects() {
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            return em.createQuery(
+                    "SELECT DISTINCT e FROM Employee e LEFT JOIN FETCH e.projects",
+                    Employee.class
+            ).getResultList();
+        } finally {
+            em.close();
+        }
+    }
 }
