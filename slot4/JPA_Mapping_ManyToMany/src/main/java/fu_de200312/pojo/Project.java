@@ -28,6 +28,9 @@ public class Project {
 
     private LocalDate endDate;
 
+    @ManyToMany(mappedBy = "projects")
+    private Set<Employee> employees = new HashSet<>();
+
     public Project() {
     }
 
@@ -88,15 +91,14 @@ public class Project {
         this.endDate = endDate;
     }
 
-    @ManyToMany(mappedBy = "projects")
-    private Set<Employee> employees = new HashSet<>();
+    public Set<Employee> getEmployees() {
+        return employees;
+    }
 
     /*
      * TODO 5.4:
      * Dùng projectCode làm business key thay vì id.
-     * Không dùng id vì id được Hibernate sinh tự động và có thể thay đổi
-     * từ null -> giá trị sau khi entity được persist, điều này có thể
-     * làm sai hành vi của HashSet/HashMap.
+     * Không dùng id vì id được Hibernate sinh tự động.
      */
     @Override
     public boolean equals(Object o) {

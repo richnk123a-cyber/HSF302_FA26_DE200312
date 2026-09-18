@@ -113,7 +113,10 @@ public class Employee {
         this.active = active;
     }
 
-    // Tính toán ngay khi gọi getter, không lưu trong DB
+    public Set<Project> getProjects() {
+        return projects;
+    }
+
     public int getYearsOfService() {
         if (hireDate == null) {
             return 0;
@@ -122,11 +125,23 @@ public class Employee {
     }
 
     /*
+     * TODO 5.5:
+     * Phân công Employee vào Project ở cả hai phía của quan hệ.
+     */
+    public void assignToProject(Project p) {
+        if (p == null) {
+            return;
+        }
+
+        this.projects.add(p);
+        p.getEmployees().add(this);
+    }
+
+    /*
      * TODO 5.4:
      * Dùng email làm business key thay vì id.
      * Không dùng id vì id được Hibernate sinh tự động và có thể thay đổi
-     * từ null -> giá trị sau khi entity được persist, điều này có thể
-     * làm sai hành vi của HashSet/HashMap.
+     * từ null -> giá trị sau khi entity được persist.
      */
     @Override
     public boolean equals(Object o) {
