@@ -3,6 +3,8 @@ package fu_de200312.pojo;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Set;
+import java.util.HashSet;
 
 @Entity
 @Table(name = "projects")
@@ -84,6 +86,9 @@ public class Project {
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
     }
+
+    @ManyToMany(mappedBy = "projects")
+    private Set<Employee> employees = new HashSet<>();
 
     @Override
     public String toString() {
