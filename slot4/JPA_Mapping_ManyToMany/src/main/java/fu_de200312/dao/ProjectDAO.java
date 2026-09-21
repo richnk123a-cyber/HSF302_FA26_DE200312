@@ -4,6 +4,7 @@ import fu_de200312.pojo.Project;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+import java.util.List;
 
 public class ProjectDAO {
 
@@ -34,6 +35,22 @@ public class ProjectDAO {
 
         try {
             return em.find(Project.class, id);
+        } finally {
+            em.close();
+        }
+    }
+
+    public List<Object[]> countActiveEmployeesAndSumSalaryByProject() {
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            return em.createQuery(
+                    "SELECT p.projectName, COUNT(e), SUM(e.salary) " +
+                    "FROM Project p JOIN p.employees e " +
+                    "WHERE e.active = true " +
+                    "GROUP BY p.projectName",
+                    Object[].class
+            ).getResultList();
         } finally {
             em.close();
         }

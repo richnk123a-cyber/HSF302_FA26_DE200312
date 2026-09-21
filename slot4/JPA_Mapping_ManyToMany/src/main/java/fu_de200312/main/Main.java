@@ -128,5 +128,16 @@ public class Main {
 
             System.out.println();
         });
+
+        System.out.println(
+                "===== TODO 5.8: SO NV ACTIVE VA TONG SALARY THEO PROJECT ====="
+        );
+
+        projectDAO.countActiveEmployeesAndSumSalaryByProject()
+                .forEach(row -> System.out.println(
+                        "Project: " + row[0]
+                                + " | So NV active: " + row[1]
+                                + " | Tong salary: " + row[2]
+                ));
     }
 }
