@@ -228,4 +228,41 @@ public class EmployeeDAO {
             em.close();
         }
     }
+
+    /*
+     * TODO 5.11:
+     * - Nhân viên nghỉ việc (deactivate / soft-delete) KHÔNG NÊN tự động bị gỡ khỏi tất cả project:
+     *   + Cần giữ lại lịch sử tham gia (historical data / audit log) để biết nhân viên đó từng đóng góp cho các project nào.
+     *   + Khi tính toán nhân sự hay chi phí hiện tại, chỉ cần lọc theo điều kiện (e.active = true) như ở TODO 5.8 & TODO 5.10.
+     *
+     * - Về Cascade:
+     *   + Tuyệt đối KHÔNG dùng CascadeType.REMOVE trên quan hệ ManyToMany, vì việc xóa hoặc thao tác trên Employee có thể cascade xóa luôn cả Project (entity độc lập).
+     *
+     * - Cách xử lý phù hợp:
+     *   + Sử dụng Soft Delete: cập nhật active = false (giữ nguyên liên kết trong bảng trung gian employee_project).
+     *   + Nếu nghiệp vụ thực sự yêu cầu gỡ nhân viên khỏi dự án cụ thể, chủ động gọi method gỡ (unassignFromProject) trong transaction riêng biệt một cách tường minh.
+     */
+    public void deactivateEmployee(Long employeeId) {
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            em.getTransaction().begin();
+
+            Employee employee = em.find(Employee.class, employeeId);
+            if (employee == null) {
+                throw new IllegalArgumentException("Employee not found: " + employeeId);
+            }
+
+            employee.setActive(false);
+
+            em.getTransaction().commit();
+        } catch (Exception ex) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            throw ex;
+        } finally {
+            em.close();
+        }
+    }
 }

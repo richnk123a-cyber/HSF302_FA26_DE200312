@@ -177,5 +177,15 @@ public class Main {
                 .forEach(e -> System.out.println(
                         e.getFullName() + " (" + e.getEmail() + ")"
                 ));
+
+        System.out.println(
+                "===== TODO 5.11: DEACTIVATE EMPLOYEE 2 ====="
+        );
+
+        employeeDAO.deactivateEmployee(employee2.getId());
+
+        Employee updatedEmp2 = employeeDAO.findById(employee2.getId());
+        System.out.println("Trang thai active cua NV2 sau khi deactivate: "
+                + updatedEmp2.isActive());
     }
 }
