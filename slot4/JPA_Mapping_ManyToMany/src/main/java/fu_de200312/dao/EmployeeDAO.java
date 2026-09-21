@@ -215,4 +215,17 @@ public class EmployeeDAO {
             em.close();
         }
     }
+
+    public java.util.List<Employee> findActiveEmployeesInMultipleProjects() {
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            return em.createQuery(
+                    "SELECT e FROM Employee e WHERE e.active = true AND SIZE(e.projects) > 1",
+                    Employee.class
+            ).getResultList();
+        } finally {
+            em.close();
+        }
+    }
 }

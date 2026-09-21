@@ -168,5 +168,14 @@ public class Main {
 
         System.out.println("Xac nhan Project A van ton tai: "
                 + (projectDAO.findById(projectA.getId()) != null));
+
+        System.out.println(
+                "===== TODO 5.10: NV ACTIVE THAM GIA NHIEU HON 1 PROJECT ====="
+        );
+
+        employeeDAO.findActiveEmployeesInMultipleProjects()
+                .forEach(e -> System.out.println(
+                        e.getFullName() + " (" + e.getEmail() + ")"
+                ));
     }
 }
