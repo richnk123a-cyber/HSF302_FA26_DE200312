@@ -151,6 +151,15 @@ public class Employee {
         p.getEmployees().add(this);
     }
 
+    public void unassignFromProject(Project p) {
+        if (p == null) {
+            return;
+        }
+
+        this.projects.remove(p);
+        p.getEmployees().remove(this);
+    }
+
     // TODO 5.4:
     // Dùng email làm business key, không dùng id.
     // id do Hibernate tự sinh và có thể thay đổi từ null -> giá trị

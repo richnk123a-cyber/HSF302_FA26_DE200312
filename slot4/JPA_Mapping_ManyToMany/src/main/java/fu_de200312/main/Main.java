@@ -139,5 +139,34 @@ public class Main {
                                 + " | So NV active: " + row[1]
                                 + " | Tong salary: " + row[2]
                 ));
+
+        System.out.println(
+                "===== TODO 5.9: GO NV1 KHOI PROJECT A ====="
+        );
+
+        System.out.println("Truoc khi go - projects cua NV1:");
+        employeeDAO.findAllWithProjects().stream()
+                .filter(e -> e.getId().equals(employee1.getId()))
+                .findFirst()
+                .ifPresent(e -> e.getProjects()
+                        .forEach(p -> System.out.println("  - " + p.getProjectCode())));
+
+        employeeDAO.unassignEmployeeFromProject(
+                employee1.getId(),
+                projectA.getId()
+        );
+
+        System.out.println("Sau khi go - projects cua NV1:");
+        employeeDAO.findAllWithProjects().stream()
+                .filter(e -> e.getId().equals(employee1.getId()))
+                .findFirst()
+                .ifPresent(e -> e.getProjects()
+                        .forEach(p -> System.out.println("  - " + p.getProjectCode())));
+
+        System.out.println("Xac nhan Employee NV1 van ton tai: "
+                + (employeeDAO.findById(employee1.getId()) != null));
+
+        System.out.println("Xac nhan Project A van ton tai: "
+                + (projectDAO.findById(projectA.getId()) != null));
     }
 }
