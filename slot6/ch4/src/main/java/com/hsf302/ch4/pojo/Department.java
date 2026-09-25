@@ -34,7 +34,7 @@ public class Department {
         this.name = name;
     }
 
-   
+
     public void addStudent(Student s) {
         students.add(s);
         s.setDepartment(this);
