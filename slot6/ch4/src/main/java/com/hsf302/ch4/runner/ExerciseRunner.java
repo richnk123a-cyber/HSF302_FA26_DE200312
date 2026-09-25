@@ -21,17 +21,20 @@ public class ExerciseRunner implements CommandLineRunner {
     @Override
     public void run(String... args) {
         partB();
-        partC();
-        partD();
-        bonus();      // chạy trên dữ liệu gốc → trước Part E
-        partE();
+//        partC();
+//        partD();
+//        bonus();      // chạy trên dữ liệu gốc → trước Part E
+//        partE();
     }
 
-    private void partB() { todo6(); todo7(); }
-    private void partC() { todo8(); todo9(); todo10(); todo11(); }
-    private void partD() { todo12(); todo13(); todo14(); todo15(); todo16(); todo17(); todo18(); todo19(); }
-    private void bonus() { todo24(); }
-    private void partE() { todo20(); todo21(); todo22(); todo23(); }
+    private void partB() {
+        todo6();
+//        todo7();
+    }
+//    private void partC() { todo8(); todo9(); todo10(); todo11(); }
+//    private void partD() { todo12(); todo13(); todo14(); todo15(); todo16(); todo17(); todo18(); todo19(); }
+//    private void bonus() { todo24(); }
+//    private void partE() { todo20(); todo21(); todo22(); todo23(); }
 
     // ===== helpers =====
     private void title(String t) {
@@ -44,5 +47,19 @@ public class ExerciseRunner implements CommandLineRunner {
         System.out.println("   -> " + list.size() + " record(s)");
     }
 
-    // todo6() ... todo24() viết ở các TODO bên dưới
+    private void todo6() {
+        title("TODO 6: count / findById / existsById");
+        System.out.println("Departments: " + departmentService.count());
+        System.out.println("Students   : " + studentService.count());
+
+        studentService.findById(1L).ifPresentOrElse(
+                s -> System.out.println("findById(1)  -> " + s),
+                () -> System.out.println("findById(1)  -> Not found"));
+
+        System.out.println("findById(99) -> " + studentService.findById(99L)
+                .map(Object::toString)
+                .orElse("Not found"));
+
+        System.out.println("existsById(4) department -> " + departmentService.existsById(4L));
+    }
 }
