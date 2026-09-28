@@ -113,4 +113,9 @@ public class ExerciseRunner implements CommandLineRunner {
         printList("Top 3 GPA", studentService.findTop3ByGpa());
         printList("Departments without students", departmentService.findDepartmentsWithoutStudents());
     }
+    private void todo12() {
+        title("TODO 12: JPQL + named parameter");
+        printList("SE, GPA >= 3.0",
+                studentService.findGoodStudents("SE", 3.0));
+    }
 }
