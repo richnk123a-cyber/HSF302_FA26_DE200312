@@ -4,11 +4,13 @@ import com.hsf302.ch4.dto.StudentSummary;
 import com.hsf302.ch4.pojo.Gender;
 import com.hsf302.ch4.pojo.Student;
 import com.hsf302.ch4.repository.StudentRepository;
+import com.hsf302.ch4.specification.StudentSpecs;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
@@ -171,6 +173,16 @@ public class StudentServiceImpl implements StudentService {
     @Transactional
     public long deleteInactiveStudents() {
         return studentRepository.deleteByActiveFalse();
+    }
+
+    @Override
+    public List<Student> search(String kw, String deptCode, Double minGpa, Boolean active) {
+        Specification<Student> spec = Specification.where(StudentSpecs.nameContains(kw))
+                .and(StudentSpecs.inDepartment(deptCode))
+                .and(StudentSpecs.gpaAtLeast(minGpa))
+                .and(StudentSpecs.isActive(active));
+
+        return studentRepository.findAll(spec, Sort.by("fullName"));
     }
 }
 
