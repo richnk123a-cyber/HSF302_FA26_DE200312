@@ -150,4 +150,9 @@ public class ExerciseRunner implements CommandLineRunner {
         System.out.println("(b) " + aiFull);
         aiFull.getStudents().forEach(s -> System.out.println("     " + s));
     }
+    private void todo17() {
+        title("TODO 17: Native query - TOP N");
+        printList("Top 2 GPA of SE",
+                studentService.findTopNInDepartment("SE", 2));
+    }
 }
