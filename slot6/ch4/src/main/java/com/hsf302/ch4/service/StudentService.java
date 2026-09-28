@@ -2,10 +2,8 @@ package com.hsf302.ch4.service;
 
 import com.hsf302.ch4.pojo.Student;
 import org.springframework.data.domain.Page;
-import com.hsf302.ch4.pojo.Student;
 import java.util.Optional;
 import java.util.List;
-import java.util.Optional;
 
 public interface StudentService {
     long count();                                                       // TODO 6
@@ -15,5 +13,8 @@ public interface StudentService {
     Optional<Student> findByStudentCode(String studentCode);
     boolean isEmailExisted(String email);
     long countActive();
+    List<Student> searchByName(String keyword);
+    List<Student> findByEmailDomain(String domain);
+    List<Student> findWithoutEmail();
 }
 
