@@ -3,11 +3,12 @@ package com.hsf302.ch4.repository;
 import com.hsf302.ch4.dto.StudentSummary;
 import com.hsf302.ch4.pojo.Gender;
 import com.hsf302.ch4.pojo.Student;
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
+import org.springframework.data.domain.Pageable;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -66,4 +67,7 @@ public interface StudentRepository extends JpaRepository<Student, Long>,
             "WHERE s.active = true " +
             "ORDER BY s.fullName")
     List<StudentSummary> findActiveSummaries();
+
+    @Query("SELECT s FROM Student s WHERE s.department.code = :code AND s.active = true")
+    Page<Student> findActiveByDepartment(@Param("code") String code, Pageable pageable);
 }
