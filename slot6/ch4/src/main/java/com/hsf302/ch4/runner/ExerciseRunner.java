@@ -128,4 +128,8 @@ public class ExerciseRunner implements CommandLineRunner {
         printList("code | name | total | avgGpa",
                 departmentService.getStatistics());
     }
+    private void todo15() {
+        title("TODO 15: Subquery - GPA above average");
+        printList("GPA > AVG", studentService.findAboveAverageGpa());
+    }
 }
