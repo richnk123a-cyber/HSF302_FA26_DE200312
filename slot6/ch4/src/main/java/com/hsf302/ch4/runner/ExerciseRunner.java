@@ -182,4 +182,10 @@ public class ExerciseRunner implements CommandLineRunner {
         System.out.println("After : "
                 + studentService.findByStudentCode("SE001").orElseThrow());
     }
+    private void todo21() {
+        title("TODO 21: @Modifying UPDATE");
+        int rows = studentService.deactivateLowGpa(2.5);
+        System.out.println("Rows affected: " + rows);
+        System.out.println("Active students now: " + studentService.countActive());
+    }
 }
