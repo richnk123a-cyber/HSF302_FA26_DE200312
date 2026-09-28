@@ -146,5 +146,20 @@ public class StudentServiceImpl implements StudentService {
         Pageable pageable = PageRequest.of(pageIndex, size, Sort.by("gpa").descending());
         return studentRepository.findActiveByDepartment(deptCode, pageable);
     }
+
+    @Override
+    @Transactional
+    public Student updateGpa(String studentCode, double newGpa) {
+        if (newGpa < 0 || newGpa > 4) {
+            throw new IllegalArgumentException("GPA phải trong khoảng [0, 4]");
+        }
+
+        Student s = studentRepository.findByStudentCode(studentCode)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Student not found: " + studentCode));
+
+        s.setGpa(newGpa);
+        return s;
+    }
 }
 
