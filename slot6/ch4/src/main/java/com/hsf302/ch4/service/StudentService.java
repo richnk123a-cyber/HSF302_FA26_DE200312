@@ -33,5 +33,6 @@ public interface StudentService {
     Page<Student> findActiveByDepartment(String deptCode, int pageIndex, int size);
     Student updateGpa(String studentCode, double newGpa);
     int deactivateLowGpa(double threshold);
+    long deleteInactiveStudents();
 }
 
