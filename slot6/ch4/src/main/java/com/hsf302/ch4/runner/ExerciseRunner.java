@@ -106,4 +106,11 @@ public class ExerciseRunner implements CommandLineRunner {
         printList("dob after 2005-01-01",
                 studentService.findBornAfter(LocalDate.of(2005, 1, 1)));
     }
+    private void todo11() {
+        title("TODO 11: Nested property / Top / IsEmpty");
+        printList("Students of SE (order by name)", studentService.findByDepartment("SE"));
+        System.out.println("count students of AI -> " + studentService.countByDepartment("AI"));
+        printList("Top 3 GPA", studentService.findTop3ByGpa());
+        printList("Departments without students", departmentService.findDepartmentsWithoutStudents());
+    }
 }
