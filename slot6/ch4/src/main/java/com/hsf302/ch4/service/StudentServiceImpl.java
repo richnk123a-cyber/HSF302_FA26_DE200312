@@ -184,5 +184,9 @@ public class StudentServiceImpl implements StudentService {
 
         return studentRepository.findAll(spec, Sort.by("fullName"));
     }
+    @Override
+    public List<Student> findByGender(Gender gender) {
+        return studentRepository.findByGender(gender);
+    }
 }
 

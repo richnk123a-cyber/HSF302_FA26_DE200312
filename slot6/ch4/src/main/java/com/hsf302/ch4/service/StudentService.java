@@ -35,5 +35,6 @@ public interface StudentService {
     int deactivateLowGpa(double threshold);
     long deleteInactiveStudents();
     List<Student> search(String kw, String deptCode, Double minGpa, Boolean active);
+    List<Student> findByGender(Gender gender);
 }
 

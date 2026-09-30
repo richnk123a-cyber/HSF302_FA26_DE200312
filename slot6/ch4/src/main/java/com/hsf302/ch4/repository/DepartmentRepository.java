@@ -22,4 +22,10 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
 
     @Query("SELECT d FROM Department d LEFT JOIN FETCH d.students WHERE d.code = :code")
     Optional<Department> findByCodeWithStudents(@Param("code") String code);
+
+    @Query("SELECT d.name, COUNT(s.id) " +
+            "FROM Department d LEFT JOIN d.students s " +
+            "GROUP BY d.name " +
+            "ORDER BY d.name")
+    List<Object[]> countStudentsByDepartmentName();
 }

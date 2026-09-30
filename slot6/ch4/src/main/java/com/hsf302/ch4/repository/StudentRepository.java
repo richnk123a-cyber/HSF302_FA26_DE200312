@@ -4,6 +4,7 @@ import com.hsf302.ch4.dto.StudentSummary;
 import com.hsf302.ch4.pojo.Department;
 import com.hsf302.ch4.pojo.Gender;
 import com.hsf302.ch4.pojo.Student;
+import jakarta.persistence.NamedNativeQuery;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -22,6 +23,7 @@ public interface StudentRepository extends JpaRepository<Student, Long>,
     boolean existsByEmail(String email);
 
     long countByActiveTrue();
+
     List<Student> findByFullNameContainingIgnoreCase(String keyword);
 
     List<Student> findByEmailEndingWith(String suffix);
@@ -39,6 +41,7 @@ public interface StudentRepository extends JpaRepository<Student, Long>,
     long countByDepartment_Code(String code);
 
     List<Student> findTop3ByOrderByGpaDesc();
+
     @Query("SELECT s FROM Student s " +
             "WHERE s.department.code = :code AND s.gpa >= :minGpa " +
             "ORDER BY s.gpa DESC")
@@ -55,6 +58,7 @@ public interface StudentRepository extends JpaRepository<Student, Long>,
             "WHERE s.gpa > (SELECT AVG(s2.gpa) FROM Student s2) " +
             "ORDER BY s.gpa DESC")
     List<Student> findAboveAverageGpa();
+
     @Query(value = "SELECT TOP (:n) s.* " +
             "FROM students s JOIN departments d ON s.department_id = d.id " +
             "WHERE d.code = :code " +
@@ -84,4 +88,7 @@ public interface StudentRepository extends JpaRepository<Student, Long>,
                          @Param("to") Department to);
 
     long deleteByActiveFalse();
+
+    @Query("SELECT s FROM Student s WHERE s.gender = :gender")
+    List<Student> findByGender(@Param("gender") Gender gender);
 }

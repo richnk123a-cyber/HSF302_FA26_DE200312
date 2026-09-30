@@ -27,11 +27,13 @@ public class ExerciseRunner implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        partB();
+//        partB();
 //        partC();
 //        partD();
 //        bonus();      // chạy trên dữ liệu gốc → trước Part E
 //        partE();
+          todo0();
+          countStudentsByDepartmentName();
     }
 
     private void partB() {
@@ -208,5 +210,16 @@ public class ExerciseRunner implements CommandLineRunner {
                 studentService.search(null, "AI", 3.0, true));
         printList("search(van, null, null, null)",
                 studentService.search("van", null, null, null));
+    }
+    private void todo0(){
+        title("TODO 0: Find student have gender is MALE");
+        printList("Students with gender MALE",
+                studentService.findByGender(Gender.MALE));
+    }
+
+    private void countStudentsByDepartmentName() {
+        title("Count students by department name");
+        departmentService.countStudentsByDepartmentName()
+                .forEach(row -> System.out.println(row[0] + " | " + row[1]));
     }
 }
