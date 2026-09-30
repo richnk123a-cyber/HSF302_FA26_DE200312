@@ -9,7 +9,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-
+import com.hsf302.ch4.pojo.Course;
 import java.util.Collection;
 
 @Component
@@ -25,6 +25,7 @@ public class Exercise2Runner implements CommandLineRunner {
     @Override
     public void run(String... args) {
         todo6();
+        todo7();
     }
 
     private void title(String t) {
@@ -58,5 +59,19 @@ public class Exercise2Runner implements CommandLineRunner {
                     .map(Course::toString)
                     .orElse("Not found"));
         }
+    }
+
+    private void todo7() {
+        title("TODO 7: navigate student.getCourses() / course.getStudents()");
+
+        printList(
+                "(a) Courses of SE001",
+                enrollmentService.getCoursesOfStudent("SE001")
+        );
+
+        printList(
+                "(b) Students of AIL303",
+                enrollmentService.getStudentsOfCourse("AIL303")
+        );
     }
 }
