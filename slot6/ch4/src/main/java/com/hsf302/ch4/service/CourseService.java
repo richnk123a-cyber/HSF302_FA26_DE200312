@@ -12,4 +12,10 @@ public interface CourseService {
     List<Course> findAllOrderByCode();
 
     Optional<Course> findById(Long id);
+
+    Optional<Course> findByCode(String code);
+
+    List<Course> findBySemester(String semester);
+
+    long countBySemester(String semester);
 }

@@ -9,8 +9,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import com.hsf302.ch4.pojo.Course;
+
 import java.util.Collection;
+import java.util.List;
 
 @Component
 @Order(3)
@@ -26,6 +27,7 @@ public class Exercise2Runner implements CommandLineRunner {
     public void run(String... args) {
         todo6();
         todo7();
+        todo8();
     }
 
     private void title(String t) {
@@ -46,6 +48,7 @@ public class Exercise2Runner implements CommandLineRunner {
             System.out.println("   [FAIL] " + label + " -> " + e.getMessage());
         }
     }
+
     private void todo6() {
         title("TODO 6: count, findAll(Sort), findById");
 
@@ -72,6 +75,26 @@ public class Exercise2Runner implements CommandLineRunner {
         printList(
                 "(b) Students of AIL303",
                 enrollmentService.getStudentsOfCourse("AIL303")
+        );
+    }
+
+    private void todo8() {
+        title("TODO 8: findByCode, findBySemester, countBySemester");
+
+        for (String code : List.of("HSF302", "XXX000")) {
+            System.out.println("(a) " + code + ": "
+                    + courseService.findByCode(code)
+                    .map(Course::getName)
+                    .orElse("Not found"));
+        }
+
+        printList(
+                "(b) Semester SU26",
+                courseService.findBySemester("SU26")
+        );
+
+        System.out.println(
+                "(c) Courses in FA26: " + courseService.countBySemester("FA26")
         );
     }
 }
