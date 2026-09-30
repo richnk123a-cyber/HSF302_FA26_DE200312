@@ -48,6 +48,12 @@ public interface StudentRepository extends JpaRepository<Student, Long>,
 
     List<Student> findByCourses_CodeAndActiveTrueOrderByFullNameAsc(String courseCode);
 
+    // ===== Exercise 2 - TODO 11 =====
+
+    List<Student> findByCoursesIsEmptyOrderByFullNameAsc();
+
+    boolean existsByStudentCodeAndCourses_Code(String studentCode, String courseCode);
+
     List<Student> findTop3ByOrderByGpaDesc();
 
     @Query("SELECT s FROM Student s " +
