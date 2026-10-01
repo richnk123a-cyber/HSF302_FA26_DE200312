@@ -21,29 +21,23 @@ public interface CourseService {
 
     long countBySemester(String semester);
 
-    // ===== Exercise 2 - TODO 10 =====
-
     List<Course> findCoursesOfStudent(String studentCode);
 
     List<Course> findCoursesOfDepartment(String deptCode, boolean distinct);
 
-    // ===== Exercise 2 - TODO 11 =====
-
     List<Course> findCoursesWithoutStudents();
-
-    // ===== Exercise 2 - TODO 13 =====
 
     List<CourseStatDTO> getStatistics();
 
-    // ===== Exercise 2 - TODO 15 =====
-
     List<Course> findFullCourses();
-
-    // ===== Exercise 2 - TODO 16 =====
 
     Course getWithStudents(String code);
 
-    // ===== Exercise 2 - TODO 17 =====
-
     List<CourseEnrollmentCount> findTopEnrolled(int n);
+
+    // ===== Exercise 2 - TODO 23 =====
+
+    void deleteCourseDirectly(String code);
+
+    int deleteCourse(String code);
 }
