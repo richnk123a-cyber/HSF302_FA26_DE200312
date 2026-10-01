@@ -1,5 +1,6 @@
 package com.hsf302.ch4.repository;
 
+import com.hsf302.ch4.dto.EnrollmentView;
 import com.hsf302.ch4.dto.StudentCreditDTO;
 import com.hsf302.ch4.dto.StudentSummary;
 import com.hsf302.ch4.pojo.Department;
@@ -13,12 +14,13 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.domain.Pageable;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 public interface StudentRepository extends JpaRepository<Student, Long>,
-                                           JpaSpecificationExecutor<Student> {
+        JpaSpecificationExecutor<Student> {
     Optional<Student> findByStudentCode(String studentCode);
 
     boolean existsByEmail(String email);
@@ -71,11 +73,24 @@ public interface StudentRepository extends JpaRepository<Student, Long>,
             "ORDER BY SUM(c.credits) DESC, s.fullName")
     List<StudentCreditDTO> getCreditSummary(@Param("minCredits") long minCredits);
 
+    // ===== Exercise 2 - TODO 15 =====
+
+    @Query("SELECT s FROM Student s WHERE SIZE(s.courses) > :n ORDER BY s.fullName")
+    List<Student> findStudentsWithMoreThanNCourses(@Param("n") int n);
+
     // ===== Exercise 2 - TODO 16 =====
 
     @Query("SELECT s FROM Student s LEFT JOIN FETCH s.courses WHERE s.studentCode = :code")
     Optional<Student> findByStudentCodeWithCourses(@Param("code") String studentCode);
 
+    // ===== Exercise 2 - TODO 18 =====
+
+    @Query("SELECT s.studentCode AS studentCode, s.fullName AS fullName, " +
+            "       c.code AS courseCode, c.name AS courseName, c.credits AS credits " +
+            "FROM Student s JOIN s.department d JOIN s.courses c " +
+            "WHERE d.code = :deptCode " +
+            "ORDER BY s.studentCode, c.code")
+    List<EnrollmentView> findEnrollmentsOfDepartment(@Param("deptCode") String deptCode);
 
     List<Student> findTop3ByOrderByGpaDesc();
 
@@ -128,9 +143,4 @@ public interface StudentRepository extends JpaRepository<Student, Long>,
 
     @Query("SELECT s FROM Student s WHERE s.gender = :gender")
     List<Student> findByGender(@Param("gender") Gender gender);
-
-    // ===== Exercise 2 - TODO 15 =====
-
-    @Query("SELECT s FROM Student s WHERE SIZE(s.courses) > :n ORDER BY s.fullName")
-    List<Student> findStudentsWithMoreThanNCourses(@Param("n") int n);
 }
