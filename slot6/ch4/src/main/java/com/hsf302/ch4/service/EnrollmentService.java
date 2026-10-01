@@ -35,4 +35,8 @@ public interface EnrollmentService {
     // ===== Exercise 2 - TODO 15 =====
 
     List<Student> findStudentsWithMoreThan(int n);
+
+    // ===== Exercise 2 - TODO 16 =====
+
+    Student getStudentWithCourses(String studentCode);
 }

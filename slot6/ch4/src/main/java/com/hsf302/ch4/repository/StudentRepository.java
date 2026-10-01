@@ -71,6 +71,12 @@ public interface StudentRepository extends JpaRepository<Student, Long>,
             "ORDER BY SUM(c.credits) DESC, s.fullName")
     List<StudentCreditDTO> getCreditSummary(@Param("minCredits") long minCredits);
 
+    // ===== Exercise 2 - TODO 16 =====
+
+    @Query("SELECT s FROM Student s LEFT JOIN FETCH s.courses WHERE s.studentCode = :code")
+    Optional<Student> findByStudentCodeWithCourses(@Param("code") String studentCode);
+
+
     List<Student> findTop3ByOrderByGpaDesc();
 
     @Query("SELECT s FROM Student s " +
