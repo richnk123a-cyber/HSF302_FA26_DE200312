@@ -44,6 +44,9 @@ public class Exercise2Runner implements CommandLineRunner {
         todo17();
         todo18();
         todo19();
+
+        todo25();
+
         todo20();
         todo21();
         todo22();
@@ -66,7 +69,9 @@ public class Exercise2Runner implements CommandLineRunner {
             action.run();
             System.out.println("   [OK]   " + label);
         } catch (RuntimeException e) {
-            System.out.println("   [FAIL] " + label + " -> " + e.getMessage());
+            System.out.println(
+                    "   [FAIL] " + label + " -> " + e.getMessage()
+            );
         }
     }
 
@@ -180,12 +185,18 @@ public class Exercise2Runner implements CommandLineRunner {
 
         System.out.println(
                 "(c) SE001 enrolled AIL303? "
-                        + enrollmentService.isEnrolled("SE001", "AIL303")
+                        + enrollmentService.isEnrolled(
+                        "SE001",
+                        "AIL303"
+                )
         );
 
         System.out.println(
                 "    SE002 enrolled AIL303? "
-                        + enrollmentService.isEnrolled("SE002", "AIL303")
+                        + enrollmentService.isEnrolled(
+                        "SE002",
+                        "AIL303"
+                )
         );
     }
 
@@ -194,7 +205,10 @@ public class Exercise2Runner implements CommandLineRunner {
 
         printList(
                 "HSF302 & GPA >= 3.5",
-                enrollmentService.findGoodStudentsInCourse("HSF302", 3.5)
+                enrollmentService.findGoodStudentsInCourse(
+                        "HSF302",
+                        3.5
+                )
         );
     }
 
@@ -221,13 +235,14 @@ public class Exercise2Runner implements CommandLineRunner {
     private void todo14() {
         title("TODO 14: total credits per student (GROUP BY + HAVING)");
 
-        enrollmentService.getCreditSummary(7).forEach(d -> System.out.printf(
-                "   %s | %-15s | %d course(s) | %d credits%n",
-                d.studentCode(),
-                d.fullName(),
-                d.courseCount(),
-                d.totalCredits()
-        ));
+        enrollmentService.getCreditSummary(7)
+                .forEach(d -> System.out.printf(
+                        "   %s | %-15s | %d course(s) | %d credits%n",
+                        d.studentCode(),
+                        d.fullName(),
+                        d.courseCount(),
+                        d.totalCredits()
+                ));
     }
 
     private void todo15() {
@@ -248,49 +263,66 @@ public class Exercise2Runner implements CommandLineRunner {
         title("TODO 16: LazyInitializationException, JOIN FETCH, @EntityGraph");
 
         try {
-            Student s = studentService.findByStudentCode("SE001").orElseThrow();
-            System.out.println("(a) courses = " + s.getCourses().size());
+            Student s = studentService
+                    .findByStudentCode("SE001")
+                    .orElseThrow();
+
+            System.out.println(
+                    "(a) courses = " + s.getCourses().size()
+            );
         } catch (LazyInitializationException e) {
             System.out.println(
                     "(a) Caught: " + e.getClass().getSimpleName()
             );
-            System.out.println("    " + e.getMessage());
+
+            System.out.println(
+                    "    " + e.getMessage()
+            );
         }
 
         Student s = enrollmentService.getStudentWithCourses("SE001");
 
         System.out.println(
-                "(b) " + s.getStudentCode() + " - " + s.getFullName()
+                "(b) " + s.getStudentCode()
+                        + " - " + s.getFullName()
         );
 
         s.getCourses().stream()
                 .sorted(Comparator.comparing(Course::getCode))
-                .forEach(c -> System.out.println("   " + c));
+                .forEach(c ->
+                        System.out.println("   " + c)
+                );
 
         Course c = courseService.getWithStudents("SWP391");
 
         System.out.println(
-                "(c) " + c.getCode() + " - " + c.getName()
+                "(c) " + c.getCode()
+                        + " - " + c.getName()
         );
 
         c.getStudents().stream()
                 .sorted(Comparator.comparing(Student::getFullName))
-                .forEach(st -> System.out.println("   " + st));
+                .forEach(st ->
+                        System.out.println("   " + st)
+                );
     }
 
     private void todo17() {
         title("TODO 17: native SQL on join table - top 3 enrolled courses");
 
-        courseService.findTopEnrolled(3).forEach(r -> System.out.printf(
-                "   %s | %-35s | %d student(s)%n",
-                r.getCode(),
-                r.getName(),
-                r.getEnrolled()
-        ));
+        courseService.findTopEnrolled(3)
+                .forEach(r -> System.out.printf(
+                        "   %s | %-35s | %d student(s)%n",
+                        r.getCode(),
+                        r.getName(),
+                        r.getEnrolled()
+                ));
     }
 
     private void todo18() {
-        title("TODO 18: interface projection - enrollments of department AI");
+        title(
+                "TODO 18: interface projection - enrollments of department AI"
+        );
 
         enrollmentService.getEnrollmentsOfDepartment("AI")
                 .forEach(v -> System.out.printf(
@@ -304,7 +336,10 @@ public class Exercise2Runner implements CommandLineRunner {
     }
 
     private void todo19() {
-        title("TODO 19: paginate students of HSF302 (size 2, order by fullName)");
+        title(
+                "TODO 19: paginate students of HSF302 " +
+                        "(size 2, order by fullName)"
+        );
 
         int pageIndex = 0;
         Page<Student> page;
@@ -330,32 +365,83 @@ public class Exercise2Runner implements CommandLineRunner {
         );
     }
 
+    // ===== Bonus - TODO 25 =====
+
+    private void todo25() {
+        title("TODO 25 (Bonus): Specification search");
+
+        printList(
+                "search(null, SU26, null, null)",
+                enrollmentService.search(
+                        null,
+                        "SU26",
+                        null,
+                        null
+                )
+        );
+
+        printList(
+                "search(HSF302, null, SE, 3.5)",
+                enrollmentService.search(
+                        "HSF302",
+                        null,
+                        "SE",
+                        3.5
+                )
+        );
+
+        printList(
+                "search(null, FA26, AI, null)",
+                enrollmentService.search(
+                        null,
+                        "FA26",
+                        "AI",
+                        null
+                )
+        );
+    }
+
     private void todo20() {
         title("TODO 20: enroll with business rules");
 
         attempt(
                 "enroll IA003 -> MKT101",
-                () -> enrollmentService.enroll("IA003", "MKT101")
+                () -> enrollmentService.enroll(
+                        "IA003",
+                        "MKT101"
+                )
         );
 
         attempt(
                 "enroll SE001 -> PRJ301",
-                () -> enrollmentService.enroll("SE001", "PRJ301")
+                () -> enrollmentService.enroll(
+                        "SE001",
+                        "PRJ301"
+                )
         );
 
         attempt(
                 "enroll SE004 -> AIL303",
-                () -> enrollmentService.enroll("SE004", "AIL303")
+                () -> enrollmentService.enroll(
+                        "SE004",
+                        "AIL303"
+                )
         );
 
         attempt(
                 "enroll SE003 -> HSF302",
-                () -> enrollmentService.enroll("SE003", "HSF302")
+                () -> enrollmentService.enroll(
+                        "SE003",
+                        "HSF302"
+                )
         );
 
         attempt(
                 "enroll XX999 -> HSF302",
-                () -> enrollmentService.enroll("XX999", "HSF302")
+                () -> enrollmentService.enroll(
+                        "XX999",
+                        "HSF302"
+                )
         );
 
         printList(
@@ -365,7 +451,9 @@ public class Exercise2Runner implements CommandLineRunner {
 
         System.out.println(
                 "Students of MKT101: "
-                        + enrollmentService.countStudentsInCourse("MKT101")
+                        + enrollmentService.countStudentsInCourse(
+                        "MKT101"
+                )
         );
     }
 
@@ -374,17 +462,26 @@ public class Exercise2Runner implements CommandLineRunner {
 
         attempt(
                 "unenroll AI002 <- AIL303",
-                () -> enrollmentService.unenroll("AI002", "AIL303")
+                () -> enrollmentService.unenroll(
+                        "AI002",
+                        "AIL303"
+                )
         );
 
         attempt(
                 "unenroll IA003 <- PRJ301",
-                () -> enrollmentService.unenroll("IA003", "PRJ301")
+                () -> enrollmentService.unenroll(
+                        "IA003",
+                        "PRJ301"
+                )
         );
 
         attempt(
                 "enroll   SE004 -> AIL303",
-                () -> enrollmentService.enroll("SE004", "AIL303")
+                () -> enrollmentService.enroll(
+                        "SE004",
+                        "AIL303"
+                )
         );
 
         printList(
@@ -399,7 +496,9 @@ public class Exercise2Runner implements CommandLineRunner {
 
         System.out.println(
                 "AI002 still exists? "
-                        + studentService.findByStudentCode("AI002").isPresent()
+                        + studentService
+                        .findByStudentCode("AI002")
+                        .isPresent()
         );
 
         System.out.println(
@@ -444,10 +543,17 @@ public class Exercise2Runner implements CommandLineRunner {
 
         try {
             courseService.deleteCourseDirectly("IAA202");
+
             System.out.println("(a) Deleted ?!");
         } catch (DataIntegrityViolationException e) {
-            System.out.println("(a) Caught: " + e.getClass().getSimpleName());
-            System.out.println("    " + e.getMostSpecificCause().getMessage());
+            System.out.println(
+                    "(a) Caught: "
+                            + e.getClass().getSimpleName()
+            );
+
+            System.out.println(
+                    "    " + e.getMostSpecificCause().getMessage()
+            );
         }
 
         System.out.println(
@@ -467,11 +573,14 @@ public class Exercise2Runner implements CommandLineRunner {
     }
 
     private void todo24() {
-        title("TODO 24: bulk delete enrollments of inactive students");
+        title(
+                "TODO 24: bulk delete enrollments of inactive students"
+        );
 
         System.out.println(
                 "Deleted rows: "
-                        + enrollmentService.removeEnrollmentsOfInactiveStudents()
+                        + enrollmentService
+                        .removeEnrollmentsOfInactiveStudents()
         );
 
         printCourseStats();

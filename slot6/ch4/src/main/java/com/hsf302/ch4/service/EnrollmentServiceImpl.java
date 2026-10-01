@@ -6,11 +6,13 @@ import com.hsf302.ch4.pojo.Course;
 import com.hsf302.ch4.pojo.Student;
 import com.hsf302.ch4.repository.CourseRepository;
 import com.hsf302.ch4.repository.StudentRepository;
+import com.hsf302.ch4.specification.EnrollmentSpecs;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,7 +69,10 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     @Override
     public boolean isEnrolled(String studentCode, String courseCode) {
-        return studentRepository.existsByStudentCodeAndCourses_Code(studentCode, courseCode);
+        return studentRepository.existsByStudentCodeAndCourses_Code(
+                studentCode,
+                courseCode
+        );
     }
 
     // ===== Exercise 2 - TODO 12 =====
@@ -78,7 +83,10 @@ public class EnrollmentServiceImpl implements EnrollmentService {
             throw new IllegalArgumentException("minGpa must be in [0, 4]");
         }
 
-        return studentRepository.findGoodStudentsInCourse(courseCode, minGpa);
+        return studentRepository.findGoodStudentsInCourse(
+                courseCode,
+                minGpa
+        );
     }
 
     // ===== Exercise 2 - TODO 14 =====
@@ -109,7 +117,9 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     public Student getStudentWithCourses(String studentCode) {
         return studentRepository.findByStudentCodeWithCourses(studentCode)
                 .orElseThrow(() ->
-                        new IllegalArgumentException("Student not found: " + studentCode));
+                        new IllegalArgumentException(
+                                "Student not found: " + studentCode
+                        ));
     }
 
     // ===== Exercise 2 - TODO 18 =====
@@ -120,10 +130,15 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     }
 
     @Override
-    public Page<Student> findStudentsInCoursePage(String courseCode, int pageIndex, int size) {
+    public Page<Student> findStudentsInCoursePage(
+            String courseCode,
+            int pageIndex,
+            int size
+    ) {
         if (pageIndex < 0 || size <= 0) {
             throw new IllegalArgumentException(
-                    "pageIndex must be >= 0 and size must be > 0");
+                    "pageIndex must be >= 0 and size must be > 0"
+            );
         }
 
         Pageable pageable = PageRequest.of(
@@ -132,7 +147,39 @@ public class EnrollmentServiceImpl implements EnrollmentService {
                 Sort.by("fullName")
         );
 
-        return studentRepository.findPageByCourseCode(courseCode, pageable);
+        return studentRepository.findPageByCourseCode(
+                courseCode,
+                pageable
+        );
+    }
+
+    // ===== Bonus - TODO 25 =====
+
+    @Override
+    public List<Student> search(
+            String courseCode,
+            String semester,
+            String deptCode,
+            Double minGpa
+    ) {
+        Specification<Student> spec =
+                Specification.where(
+                                EnrollmentSpecs.enrolledIn(courseCode)
+                        )
+                        .and(
+                                EnrollmentSpecs.inSemester(semester)
+                        )
+                        .and(
+                                EnrollmentSpecs.inDepartment(deptCode)
+                        )
+                        .and(
+                                EnrollmentSpecs.gpaAtLeast(minGpa)
+                        );
+
+        return studentRepository.findAll(
+                spec,
+                Sort.by("fullName")
+        );
     }
 
     // ===== Exercise 2 - TODO 20 =====
@@ -142,19 +189,22 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     public void enroll(String studentCode, String courseCode) {
         Student s = getStudent(studentCode);
         Course c = getCourse(courseCode);
+
         checkAndEnroll(s, c);
     }
 
     private void checkAndEnroll(Student s, Course c) {
         if (!s.isActive()) {
             throw new IllegalStateException(
-                    "Student " + s.getStudentCode() + " is inactive");
+                    "Student " + s.getStudentCode() + " is inactive"
+            );
         }
 
         if (s.getCourses().contains(c)) {
             throw new IllegalStateException(
                     "Student " + s.getStudentCode()
-                            + " already enrolled in " + c.getCode());
+                            + " already enrolled in " + c.getCode()
+            );
         }
 
         int enrolled = c.getStudents().size();
@@ -166,7 +216,8 @@ public class EnrollmentServiceImpl implements EnrollmentService {
                             + enrolled
                             + "/"
                             + c.getCapacity()
-                            + ")");
+                            + ")"
+            );
         }
 
         s.enroll(c);
@@ -183,7 +234,8 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         if (!s.getCourses().contains(c)) {
             throw new IllegalStateException(
                     "Student " + studentCode
-                            + " is not enrolled in " + courseCode);
+                            + " is not enrolled in " + courseCode
+            );
         }
 
         s.unenroll(c);
@@ -193,9 +245,15 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     @Override
     @Transactional
-    public void switchCourse(String studentCode, String fromCode, String toCode) {
+    public void switchCourse(
+            String studentCode,
+            String fromCode,
+            String toCode
+    ) {
         if (fromCode == null || fromCode.equals(toCode)) {
-            throw new IllegalArgumentException("fromCode and toCode must be different");
+            throw new IllegalArgumentException(
+                    "fromCode and toCode must be different"
+            );
         }
 
         Student s = getStudent(studentCode);
@@ -205,7 +263,8 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         if (!s.getCourses().contains(from)) {
             throw new IllegalStateException(
                     "Student " + studentCode
-                            + " is not enrolled in " + fromCode);
+                            + " is not enrolled in " + fromCode
+            );
         }
 
         s.unenroll(from);
@@ -222,23 +281,29 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     private Student getStudent(String studentCode) {
         if (studentCode == null || studentCode.isBlank()) {
-            throw new IllegalArgumentException("Student code must not be blank");
+            throw new IllegalArgumentException(
+                    "Student code must not be blank"
+            );
         }
 
         return studentRepository.findByStudentCode(studentCode)
                 .orElseThrow(() ->
                         new IllegalArgumentException(
-                                "Student not found: " + studentCode));
+                                "Student not found: " + studentCode
+                        ));
     }
 
     private Course getCourse(String courseCode) {
         if (courseCode == null || courseCode.isBlank()) {
-            throw new IllegalArgumentException("Course code must not be blank");
+            throw new IllegalArgumentException(
+                    "Course code must not be blank"
+            );
         }
 
         return courseRepository.findByCode(courseCode)
                 .orElseThrow(() ->
                         new IllegalArgumentException(
-                                "Course not found: " + courseCode));
+                                "Course not found: " + courseCode
+                        ));
     }
 }

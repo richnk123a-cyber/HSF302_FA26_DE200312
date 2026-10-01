@@ -48,6 +48,15 @@ public interface EnrollmentService {
 
     Page<Student> findStudentsInCoursePage(String courseCode, int pageIndex, int size);
 
+    // ===== Bonus - TODO 25 =====
+
+    List<Student> search(
+            String courseCode,
+            String semester,
+            String deptCode,
+            Double minGpa
+    );
+
     // ===== Exercise 2 - TODO 20 =====
 
     void enroll(String studentCode, String courseCode);
