@@ -1,9 +1,11 @@
 package com.hsf302.ch4.runner;
 
 import com.hsf302.ch4.pojo.Course;
+import com.hsf302.ch4.pojo.Student;
 import com.hsf302.ch4.service.CourseService;
 import com.hsf302.ch4.service.EnrollmentService;
 import com.hsf302.ch4.service.StudentService;
+import org.hibernate.LazyInitializationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
@@ -11,10 +13,9 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
-import java.util.List;
-import com.hsf302.ch4.pojo.Student;
-import org.hibernate.LazyInitializationException;
 import java.util.Comparator;
+import java.util.List;
+
 @Component
 @Order(3)
 @Profile("ex2")
@@ -38,6 +39,7 @@ public class Exercise2Runner implements CommandLineRunner {
         todo14();
         todo15();
         todo16();
+        todo17();
     }
 
     private void title(String t) {
@@ -145,6 +147,7 @@ public class Exercise2Runner implements CommandLineRunner {
                 courseService.findCoursesOfDepartment("AI", true)
         );
     }
+
     private void todo11() {
         title("TODO 11: IsEmpty, existsBy...And...");
         printList("(a) Students without courses", enrollmentService.findStudentsWithoutCourses());
@@ -152,6 +155,7 @@ public class Exercise2Runner implements CommandLineRunner {
         System.out.println("(c) SE001 enrolled AIL303? " + enrollmentService.isEnrolled("SE001", "AIL303"));
         System.out.println("    SE002 enrolled AIL303? " + enrollmentService.isEnrolled("SE002", "AIL303"));
     }
+
     private void todo12() {
         title("TODO 12: JPQL JOIN s.courses");
 
@@ -160,6 +164,7 @@ public class Exercise2Runner implements CommandLineRunner {
                 enrollmentService.findGoodStudentsInCourse("HSF302", 3.5)
         );
     }
+
     private void todo13() {
         title("TODO 13: course statistics (LEFT JOIN + GROUP BY + DTO)");
         printCourseStats();
@@ -208,5 +213,13 @@ public class Exercise2Runner implements CommandLineRunner {
         c.getStudents().stream()
                 .sorted(Comparator.comparing(Student::getFullName))
                 .forEach(st -> System.out.println("   " + st));
+    }
+
+    private void todo17() {
+        title("TODO 17: native SQL on join table - top 3 enrolled courses");
+
+        courseService.findTopEnrolled(3).forEach(r -> System.out.printf(
+                "   %s | %-35s | %d student(s)%n",
+                r.getCode(), r.getName(), r.getEnrolled()));
     }
 }
