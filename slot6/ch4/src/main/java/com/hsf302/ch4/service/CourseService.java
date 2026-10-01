@@ -33,4 +33,8 @@ public interface CourseService {
     // ===== Exercise 2 - TODO 13 =====
 
     List<CourseStatDTO> getStatistics();
+
+    // ===== Exercise 2 - TODO 15 =====
+
+    List<Course> findFullCourses();
 }

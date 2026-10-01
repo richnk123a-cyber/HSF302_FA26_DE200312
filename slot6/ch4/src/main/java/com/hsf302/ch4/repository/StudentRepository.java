@@ -122,4 +122,9 @@ public interface StudentRepository extends JpaRepository<Student, Long>,
 
     @Query("SELECT s FROM Student s WHERE s.gender = :gender")
     List<Student> findByGender(@Param("gender") Gender gender);
+
+    // ===== Exercise 2 - TODO 15 =====
+
+    @Query("SELECT s FROM Student s WHERE SIZE(s.courses) > :n ORDER BY s.fullName")
+    List<Student> findStudentsWithMoreThanNCourses(@Param("n") int n);
 }

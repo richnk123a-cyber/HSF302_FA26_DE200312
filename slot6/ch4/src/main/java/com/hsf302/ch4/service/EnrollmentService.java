@@ -31,4 +31,8 @@ public interface EnrollmentService {
     // ===== Exercise 2 - TODO 14 =====
 
     List<StudentCreditDTO> getCreditSummary(int minCredits);
+
+    // ===== Exercise 2 - TODO 15 =====
+
+    List<Student> findStudentsWithMoreThan(int n);
 }
