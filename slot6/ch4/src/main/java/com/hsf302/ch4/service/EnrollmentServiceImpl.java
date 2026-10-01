@@ -64,6 +64,17 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         return studentRepository.existsByStudentCodeAndCourses_Code(studentCode, courseCode);
     }
 
+    // ===== Exercise 2 - TODO 12 =====
+
+    @Override
+    public List<Student> findGoodStudentsInCourse(String courseCode, double minGpa) {
+        if (minGpa < 0 || minGpa > 4) {
+            throw new IllegalArgumentException("minGpa must be in [0, 4]");
+        }
+
+        return studentRepository.findGoodStudentsInCourse(courseCode, minGpa);
+    }
+
     private Student getStudent(String studentCode) {
         if (studentCode == null || studentCode.isBlank()) {
             throw new IllegalArgumentException("Student code must not be blank");
