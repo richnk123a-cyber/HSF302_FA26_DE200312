@@ -58,8 +58,6 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         return studentRepository.findByCourses_CodeAndActiveTrueOrderByFullNameAsc(courseCode);
     }
 
-    // ===== Exercise 2 - TODO 11 =====
-
     @Override
     public List<Student> findStudentsWithoutCourses() {
         return studentRepository.findByCoursesIsEmptyOrderByFullNameAsc();
@@ -70,8 +68,6 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         return studentRepository.existsByStudentCodeAndCourses_Code(studentCode, courseCode);
     }
 
-    // ===== Exercise 2 - TODO 12 =====
-
     @Override
     public List<Student> findGoodStudentsInCourse(String courseCode, double minGpa) {
         if (minGpa < 0 || minGpa > 4) {
@@ -80,8 +76,6 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
         return studentRepository.findGoodStudentsInCourse(courseCode, minGpa);
     }
-
-    // ===== Exercise 2 - TODO 14 =====
 
     @Override
     public List<StudentCreditDTO> getCreditSummary(int minCredits) {
@@ -92,8 +86,6 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         return studentRepository.getCreditSummary(minCredits);
     }
 
-    // ===== Exercise 2 - TODO 15 =====
-
     @Override
     public List<Student> findStudentsWithMoreThan(int n) {
         if (n < 0) {
@@ -103,19 +95,63 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         return studentRepository.findStudentsWithMoreThanNCourses(n);
     }
 
-    // ===== Exercise 2 - TODO 16 =====
-
     @Override
     public Student getStudentWithCourses(String studentCode) {
         return studentRepository.findByStudentCodeWithCourses(studentCode)
-                .orElseThrow(() -> new IllegalArgumentException("Student not found: " + studentCode));
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Student not found: " + studentCode));
     }
-
-    // ===== Exercise 2 - TODO 18 =====
 
     @Override
     public List<EnrollmentView> getEnrollmentsOfDepartment(String deptCode) {
         return studentRepository.findEnrollmentsOfDepartment(deptCode);
+    }
+
+    @Override
+    public Page<Student> findStudentsInCoursePage(String courseCode, int pageIndex, int size) {
+        if (pageIndex < 0 || size <= 0) {
+            throw new IllegalArgumentException(
+                    "pageIndex must be >= 0 and size must be > 0");
+        }
+
+        Pageable pageable = PageRequest.of(
+                pageIndex,
+                size,
+                Sort.by("fullName")
+        );
+
+        return studentRepository.findPageByCourseCode(courseCode, pageable);
+    }
+
+    @Override
+    @Transactional
+    public void enroll(String studentCode, String courseCode) {
+        Student s = getStudent(studentCode);
+        Course c = getCourse(courseCode);
+        checkAndEnroll(s, c);
+    }
+
+    private void checkAndEnroll(Student s, Course c) {
+        if (!s.isActive()) {
+            throw new IllegalStateException(
+                    "Student " + s.getStudentCode() + " is inactive");
+        }
+
+        if (s.getCourses().contains(c)) {
+            throw new IllegalStateException(
+                    "Student " + s.getStudentCode()
+                            + " already enrolled in " + c.getCode());
+        }
+
+        int enrolled = c.getStudents().size();
+
+        if (enrolled >= c.getCapacity()) {
+            throw new IllegalStateException(
+                    "Course " + c.getCode()
+                            + " is full (" + enrolled + "/" + c.getCapacity() + ")");
+        }
+
+        s.enroll(c);
     }
 
     private Student getStudent(String studentCode) {
@@ -125,7 +161,8 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
         return studentRepository.findByStudentCode(studentCode)
                 .orElseThrow(() ->
-                        new IllegalArgumentException("Student not found: " + studentCode));
+                        new IllegalArgumentException(
+                                "Student not found: " + studentCode));
     }
 
     private Course getCourse(String courseCode) {
@@ -135,15 +172,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
         return courseRepository.findByCode(courseCode)
                 .orElseThrow(() ->
-                        new IllegalArgumentException("Course not found: " + courseCode));
-    }
-
-    @Override
-    public Page<Student> findStudentsInCoursePage(String courseCode, int pageIndex, int size) {
-        if (pageIndex < 0 || size <= 0) {
-            throw new IllegalArgumentException("pageIndex must be >= 0 and size must be > 0");
-        }
-        Pageable pageable = PageRequest.of(pageIndex, size, Sort.by("fullName"));
-        return studentRepository.findPageByCourseCode(courseCode, pageable);
+                        new IllegalArgumentException(
+                                "Course not found: " + courseCode));
     }
 }
