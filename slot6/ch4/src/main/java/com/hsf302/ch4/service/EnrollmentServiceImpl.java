@@ -120,6 +120,24 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     }
 
     @Override
+    public Page<Student> findStudentsInCoursePage(String courseCode, int pageIndex, int size) {
+        if (pageIndex < 0 || size <= 0) {
+            throw new IllegalArgumentException(
+                    "pageIndex must be >= 0 and size must be > 0");
+        }
+
+        Pageable pageable = PageRequest.of(
+                pageIndex,
+                size,
+                Sort.by("fullName")
+        );
+
+        return studentRepository.findPageByCourseCode(courseCode, pageable);
+    }
+
+    // ===== Exercise 2 - TODO 20 =====
+
+    @Override
     @Transactional
     public void enroll(String studentCode, String courseCode) {
         Student s = getStudent(studentCode);
@@ -153,6 +171,8 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
         s.enroll(c);
     }
+
+    // ===== Exercise 2 - TODO 21 =====
 
     @Override
     @Transactional
@@ -192,6 +212,14 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         checkAndEnroll(s, to);
     }
 
+    // ===== Exercise 2 - TODO 24 =====
+
+    @Override
+    @Transactional
+    public int removeEnrollmentsOfInactiveStudents() {
+        return studentRepository.deleteEnrollmentsOfInactiveStudents();
+    }
+
     private Student getStudent(String studentCode) {
         if (studentCode == null || studentCode.isBlank()) {
             throw new IllegalArgumentException("Student code must not be blank");
@@ -212,21 +240,5 @@ public class EnrollmentServiceImpl implements EnrollmentService {
                 .orElseThrow(() ->
                         new IllegalArgumentException(
                                 "Course not found: " + courseCode));
-    }
-
-    @Override
-    public Page<Student> findStudentsInCoursePage(String courseCode, int pageIndex, int size) {
-        if (pageIndex < 0 || size <= 0) {
-            throw new IllegalArgumentException(
-                    "pageIndex must be >= 0 and size must be > 0");
-        }
-
-        Pageable pageable = PageRequest.of(
-                pageIndex,
-                size,
-                Sort.by("fullName")
-        );
-
-        return studentRepository.findPageByCourseCode(courseCode, pageable);
     }
 }

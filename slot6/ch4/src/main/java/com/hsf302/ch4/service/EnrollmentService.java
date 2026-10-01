@@ -48,9 +48,19 @@ public interface EnrollmentService {
 
     Page<Student> findStudentsInCoursePage(String courseCode, int pageIndex, int size);
 
+    // ===== Exercise 2 - TODO 20 =====
+
     void enroll(String studentCode, String courseCode);
+
+    // ===== Exercise 2 - TODO 21 =====
 
     void unenroll(String studentCode, String courseCode);
 
+    // ===== Exercise 2 - TODO 22 =====
+
     void switchCourse(String studentCode, String fromCode, String toCode);
+
+    // ===== Exercise 2 - TODO 24 =====
+
+    int removeEnrollmentsOfInactiveStudents();
 }
