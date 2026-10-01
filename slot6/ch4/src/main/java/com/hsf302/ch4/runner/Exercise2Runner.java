@@ -5,8 +5,8 @@ import com.hsf302.ch4.pojo.Student;
 import com.hsf302.ch4.service.CourseService;
 import com.hsf302.ch4.service.EnrollmentService;
 import com.hsf302.ch4.service.StudentService;
-import org.hibernate.LazyInitializationException;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.LazyInitializationException;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
@@ -45,6 +45,7 @@ public class Exercise2Runner implements CommandLineRunner {
         todo19();
         todo20();
         todo21();
+        todo22();
     }
 
     private void title(String t) {
@@ -247,14 +248,16 @@ public class Exercise2Runner implements CommandLineRunner {
             System.out.println("(a) courses = " + s.getCourses().size());
         } catch (LazyInitializationException e) {
             System.out.println(
-                    "(a) Caught: " + e.getClass().getSimpleName());
+                    "(a) Caught: " + e.getClass().getSimpleName()
+            );
             System.out.println("    " + e.getMessage());
         }
 
         Student s = enrollmentService.getStudentWithCourses("SE001");
 
         System.out.println(
-                "(b) " + s.getStudentCode() + " - " + s.getFullName());
+                "(b) " + s.getStudentCode() + " - " + s.getFullName()
+        );
 
         s.getCourses().stream()
                 .sorted(Comparator.comparing(Course::getCode))
@@ -263,7 +266,8 @@ public class Exercise2Runner implements CommandLineRunner {
         Course c = courseService.getWithStudents("SWP391");
 
         System.out.println(
-                "(c) " + c.getCode() + " - " + c.getName());
+                "(c) " + c.getCode() + " - " + c.getName()
+        );
 
         c.getStudents().stream()
                 .sorted(Comparator.comparing(Student::getFullName))
@@ -396,6 +400,38 @@ public class Exercise2Runner implements CommandLineRunner {
 
         System.out.println(
                 "Total courses: " + courseService.count()
+        );
+    }
+
+    private void todo22() {
+        title("TODO 22: switch course in one transaction");
+
+        attempt(
+                "switch SE001 SWP391 -> MKT101",
+                () -> enrollmentService.switchCourse(
+                        "SE001",
+                        "SWP391",
+                        "MKT101"
+                )
+        );
+
+        printList(
+                "Courses of SE001",
+                enrollmentService.getCoursesOfStudent("SE001")
+        );
+
+        attempt(
+                "switch SE001 PRJ301 -> AIL303",
+                () -> enrollmentService.switchCourse(
+                        "SE001",
+                        "PRJ301",
+                        "AIL303"
+                )
+        );
+
+        printList(
+                "Courses of SE001 (after rollback)",
+                enrollmentService.getCoursesOfStudent("SE001")
         );
     }
 }
