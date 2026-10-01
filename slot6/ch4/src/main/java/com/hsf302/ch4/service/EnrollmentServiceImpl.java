@@ -131,6 +131,21 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         checkAndEnroll(s, c);
     }
 
+    @Override
+    @Transactional
+    public void unenroll(String studentCode, String courseCode) {
+        Student s = getStudent(studentCode);
+        Course c = getCourse(courseCode);
+
+        if (!s.getCourses().contains(c)) {
+            throw new IllegalStateException(
+                    "Student " + studentCode
+                            + " is not enrolled in " + courseCode);
+        }
+
+        s.unenroll(c);
+    }
+
     private void checkAndEnroll(Student s, Course c) {
         if (!s.isActive()) {
             throw new IllegalStateException(
