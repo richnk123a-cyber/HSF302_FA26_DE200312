@@ -1,5 +1,6 @@
 package com.hsf302.ch4.service;
 
+import com.hsf302.ch4.dto.StudentCreditDTO;
 import com.hsf302.ch4.pojo.Course;
 import com.hsf302.ch4.pojo.Student;
 import com.hsf302.ch4.repository.CourseRepository;
@@ -73,6 +74,17 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         }
 
         return studentRepository.findGoodStudentsInCourse(courseCode, minGpa);
+    }
+
+    // ===== Exercise 2 - TODO 14 =====
+
+    @Override
+    public List<StudentCreditDTO> getCreditSummary(int minCredits) {
+        if (minCredits < 0) {
+            throw new IllegalArgumentException("minCredits must be >= 0");
+        }
+
+        return studentRepository.getCreditSummary(minCredits);
     }
 
     private Student getStudent(String studentCode) {
