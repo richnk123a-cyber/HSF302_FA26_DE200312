@@ -1,13 +1,13 @@
-package vonguyenkhanh.example.chapter6;
+package com.hsf302.chapter6;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class Chapter6ApplicationTests {
+class StudentManagementApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
+    @Test
+    void contextLoads() {
+    }
 
 }
