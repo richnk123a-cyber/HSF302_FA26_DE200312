@@ -4,6 +4,7 @@ import com.hsf302.chapter6.entity.Student;
 import com.hsf302.chapter6.service.StudentService;
 import jakarta.validation.Valid;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -38,6 +39,21 @@ public class StudentController {
 
         model.addAttribute("students", studentService.search(keyword));
         model.addAttribute("keyword", keyword);
+
+        return "students/list";
+    }
+
+    // BỔ SUNG: Phân trang
+    @GetMapping(params = {"page", "size"})
+    public String listPage(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            Model model) {
+
+        Page<Student> studentPage = studentService.findPage(page, size);
+
+        model.addAttribute("students", studentPage.getContent());
+        model.addAttribute("page", studentPage);
 
         return "students/list";
     }
@@ -79,7 +95,6 @@ public class StudentController {
             Model model,
             RedirectAttributes ra) {
 
-        // 1. Kiểm tra email trùng
         if (!bindingResult.hasFieldErrors("email")
                 && studentService.isEmailTaken(
                 student.getEmail(),
@@ -92,12 +107,10 @@ public class StudentController {
             );
         }
 
-        // 2. Có lỗi validation
         if (bindingResult.hasErrors()) {
             return formView(model, false);
         }
 
-        // 3. Lưu DB
         try {
             studentService.create(student);
         } catch (DataIntegrityViolationException e) {

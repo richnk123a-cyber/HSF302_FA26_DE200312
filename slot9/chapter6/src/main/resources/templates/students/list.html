@@ -104,6 +104,52 @@
             </a>
 
         </div>
+        <!-- BỔ SUNG: Phân trang -->
+        <div th:if="${page != null && page.totalPages > 1}" class="mt-4 mb-4">
+
+            <nav aria-label="Student pagination">
+                <ul class="pagination justify-content-center">
+
+                    <!-- Previous -->
+                    <li class="page-item" th:classappend="${page.first} ? 'disabled'">
+                        <a class="page-link"
+                           th:href="@{/students(page=${page.number - 1},size=${page.size})}">
+                            Trước
+                        </a>
+                    </li>
+
+                    <!-- Page numbers -->
+                    <li class="page-item"
+                        th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}"
+                        th:classappend="${i == page.number} ? 'active'">
+
+                        <a class="page-link"
+                           th:href="@{/students(page=${i},size=${page.size})}"
+                           th:text="${i + 1}">
+                            1
+                        </a>
+                    </li>
+
+                    <!-- Next -->
+                    <li class="page-item" th:classappend="${page.last} ? 'disabled'">
+                        <a class="page-link"
+                           th:href="@{/students(page=${page.number + 1},size=${page.size})}">
+                            Sau
+                        </a>
+                    </li>
+
+                </ul>
+            </nav>
+
+            <div class="text-center text-muted">
+                Trang <strong th:text="${page.number + 1}">1</strong>
+                /
+                <strong th:text="${page.totalPages}">1</strong>
+                —
+                Tổng <strong th:text="${page.totalElements}">0</strong> sinh viên
+            </div>
+
+        </div>
     </form>
 
 </section>
