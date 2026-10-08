@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional(readOnly = true)          // mặc định: mọi method chỉ đọc
+@Transactional(readOnly = true)
 public class StudentServiceImpl implements StudentService {
 
     private final StudentRepository studentRepository;
@@ -22,7 +22,9 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public List<Student> findAll() {
-        return studentRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
+        return studentRepository.findAll(
+                Sort.by(Sort.Direction.ASC, "id")
+        );
     }
 
     @Override
@@ -31,9 +33,9 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    @Transactional                      // ghi dữ liệu → bỏ readOnly
+    @Transactional
     public Student create(Student student) {
-        student.setId(null);            // luôn INSERT, không bao giờ ghi đè bản ghi cũ
+        student.setId(null);
         return studentRepository.save(student);
     }
 
@@ -47,8 +49,7 @@ public class StudentServiceImpl implements StudentService {
                     existing.setAge(data.getAge());
                     existing.setMajor(data.getMajor());
                     existing.setGpa(data.getGpa());
-                    // Không cần gọi save(): entity đang "managed",
-                    // Hibernate tự sinh UPDATE khi transaction commit (dirty checking)
+
                     return true;
                 })
                 .orElse(false);
@@ -60,20 +61,49 @@ public class StudentServiceImpl implements StudentService {
         if (!studentRepository.existsById(id)) {
             return false;
         }
+
         studentRepository.deleteById(id);
         return true;
     }
 
     @Override
     public boolean isEmailTaken(String email, Long excludeId) {
-        if (email == null || email.isBlank()) return false;
+        if (email == null || email.isBlank()) {
+            return false;
+        }
+
         return excludeId == null
                 ? studentRepository.existsByEmailIgnoreCase(email.trim())
-                : studentRepository.existsByEmailIgnoreCaseAndIdNot(email.trim(), excludeId);
+                : studentRepository.existsByEmailIgnoreCaseAndIdNot(
+                email.trim(),
+                excludeId
+        );
     }
 
     @Override
     public List<String> getMajors() {
-        return List.of("CNTT", "KTPM", "HTTT", "ATTT", "MMT");
+        return List.of(
+                "CNTT",
+                "KTPM",
+                "HTTT",
+                "ATTT",
+                "MMT"
+        );
+    }
+
+    @Override
+    public List<Student> search(String keyword) {
+        if (keyword == null || keyword.isBlank()) {
+            return findAll();
+        }
+
+        String value = keyword.trim();
+
+        return studentRepository
+                .findByNameContainingIgnoreCaseOrEmailContainingIgnoreCase(
+                        value,
+                        value,
+                        Sort.by(Sort.Direction.ASC, "id")
+                );
     }
 }

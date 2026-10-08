@@ -13,14 +13,13 @@ public interface StudentService {
 
     Student create(Student student);
 
-    /** @return true nếu tìm thấy và cập nhật; false nếu không tồn tại id */
     boolean update(Long id, Student data);
 
-    /** @return true nếu xoá được; false nếu không tồn tại id */
     boolean delete(Long id);
 
-    /** Kiểm tra email trùng. excludeId = null khi thêm mới, = id hiện tại khi cập nhật */
     boolean isEmailTaken(String email, Long excludeId);
 
     List<String> getMajors();
+
+    List<Student> search(String keyword);
 }
