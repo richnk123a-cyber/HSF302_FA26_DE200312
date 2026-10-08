@@ -1,90 +1,39 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
       th:replace="~{fragments/layout :: layout(~{::title}, ~{::section})}">
+
 <head>
     <title>Danh sách sinh viên</title>
 </head>
+
 <body>
 <section>
 
+    <!-- ==================== HEADER ==================== -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2><i class="bi bi-people-fill me-2"></i>Danh sách sinh viên</h2>
-        <a th:href="@{/students/create}" class="btn btn-primary">
-            <i class="bi bi-plus-lg me-1"></i>Thêm sinh viên
+
+        <h2>
+            <i class="bi bi-people-fill me-2"></i>
+            Danh sách sinh viên
+        </h2>
+
+        <a th:href="@{/students/create}"
+           class="btn btn-primary">
+
+            <i class="bi bi-plus-lg me-1"></i>
+            Thêm sinh viên
+
         </a>
+
     </div>
 
-    <div class="card shadow-sm">
-        <div class="card-body p-0">
 
-            <!-- Trường hợp rỗng -->
-            <div th:if="${#lists.isEmpty(students)}" class="text-center p-5 text-muted">
-                <i class="bi bi-inbox display-4"></i>
-                <p class="mt-2">Chưa có sinh viên nào.</p>
-                <a th:href="@{/students/create}" class="btn btn-outline-primary">Thêm ngay</a>
-            </div>
+    <!-- ==================== SEARCH ==================== -->
+    <form th:action="@{/students}"
+          method="get"
+          class="mb-4">
 
-            <!-- Bảng dữ liệu -->
-            <table th:unless="${#lists.isEmpty(students)}" class="table table-hover mb-0">
-                <thead>
-                <tr>
-                    <th>#</th>
-                    <th>ID</th>
-                    <th>Họ tên</th>
-                    <th>Email</th>
-                    <th>Tuổi</th>
-                    <th>Chuyên ngành</th>
-                    <th>GPA</th>
-                    <th class="text-center">Thao tác</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="student, stat : ${students}">
-                    <td th:text="${stat.count}">1</td>
-                    <td th:text="${student.id}">1</td>
-                    <td>
-                        <a th:href="@{/students/{id}(id=${student.id})}"
-                           th:text="${student.name}"
-                           class="text-decoration-none fw-semibold">Tên</a>
-                    </td>
-                    <td th:text="${student.email}">email</td>
-                    <td th:text="${student.age}">20</td>
-                    <td><span class="badge bg-secondary" th:text="${student.major}">CNTT</span></td>
-                    <td>
-                        <span th:classappend="${student.gpa >= 3.5} ? 'gpa-high' :
-                                              (${student.gpa >= 2.5} ? 'gpa-mid' : 'gpa-low')"
-                              th:text="${#numbers.formatDecimal(student.gpa, 1, 1)}">3.5</span>
-                    </td>
-                    <td class="text-center">
-                        <a th:href="@{/students/{id}(id=${student.id})}"
-                           class="btn btn-sm btn-outline-info me-1" title="Chi tiết">
-                            <i class="bi bi-eye"></i>
-                        </a>
-                        <a th:href="@{/students/{id}/edit(id=${student.id})}"
-                           class="btn btn-sm btn-outline-warning me-1" title="Sửa">
-                            <i class="bi bi-pencil"></i>
-                        </a>
-                        <form th:action="@{/students/{id}/delete(id=${student.id})}"
-                              method="post" class="d-inline"
-                              th:data-name="${student.name}"
-                              onsubmit="return confirm('Xóa sinh viên ' + this.dataset.name + '?')">
-                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Xóa">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <div th:unless="${#lists.isEmpty(students)}" class="text-muted mt-2">
-        <small>Tổng: <strong th:text="${#lists.size(students)}">0</strong> sinh viên</small>
-    </div>
-
-    <!-- BỔ SUNG: Tìm kiếm theo tên hoặc email -->
-    <form th:action="@{/students}" method="get" class="mb-4 mt-3">
         <div class="input-group">
 
             <input type="text"
@@ -93,64 +42,494 @@
                    placeholder="Tìm theo tên hoặc email..."
                    th:value="${keyword}"/>
 
-            <button type="submit" class="btn btn-dark">
+            <button type="submit"
+                    class="btn btn-dark">
+
                 <i class="bi bi-search me-1"></i>
                 Tìm kiếm
+
             </button>
 
             <a th:href="@{/students}"
                class="btn btn-outline-secondary">
+
                 Xóa
+
             </a>
 
         </div>
-        <!-- BỔ SUNG: Phân trang -->
-        <div th:if="${page != null && page.totalPages > 1}" class="mt-4 mb-4">
 
-            <nav aria-label="Student pagination">
-                <ul class="pagination justify-content-center">
+    </form>
 
-                    <!-- Previous -->
-                    <li class="page-item" th:classappend="${page.first} ? 'disabled'">
-                        <a class="page-link"
-                           th:href="@{/students(page=${page.number - 1},size=${page.size})}">
-                            Trước
-                        </a>
-                    </li>
 
-                    <!-- Page numbers -->
-                    <li class="page-item"
-                        th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}"
-                        th:classappend="${i == page.number} ? 'active'">
+    <!-- ==================== TABLE CARD ==================== -->
+    <div class="card shadow-sm">
 
-                        <a class="page-link"
-                           th:href="@{/students(page=${i},size=${page.size})}"
-                           th:text="${i + 1}">
-                            1
-                        </a>
-                    </li>
+        <div class="card-body p-0">
 
-                    <!-- Next -->
-                    <li class="page-item" th:classappend="${page.last} ? 'disabled'">
-                        <a class="page-link"
-                           th:href="@{/students(page=${page.number + 1},size=${page.size})}">
-                            Sau
-                        </a>
-                    </li>
+            <!-- ==================== EMPTY ==================== -->
+            <div th:if="${#lists.isEmpty(students)}"
+                 class="text-center p-5 text-muted">
 
-                </ul>
-            </nav>
+                <i class="bi bi-inbox display-4"></i>
 
-            <div class="text-center text-muted">
-                Trang <strong th:text="${page.number + 1}">1</strong>
-                /
-                <strong th:text="${page.totalPages}">1</strong>
-                —
-                Tổng <strong th:text="${page.totalElements}">0</strong> sinh viên
+                <p class="mt-2">
+                    Không tìm thấy sinh viên nào.
+                </p>
+
+                <a th:href="@{/students/create}"
+                   class="btn btn-outline-primary">
+
+                    Thêm sinh viên
+
+                </a>
+
             </div>
 
+
+            <!-- ==================== TABLE ==================== -->
+            <table th:unless="${#lists.isEmpty(students)}"
+                   class="table table-hover mb-0">
+
+                <thead>
+
+                <tr>
+
+                    <!-- # -->
+                    <th>
+                        #
+                    </th>
+
+
+                    <!-- ==================== ID ==================== -->
+                    <th>
+
+                        <a th:href="@{/students(
+                                sort=${sort == 'id,asc' ? 'id,desc' : 'id,asc'}
+                           )}"
+                           class="text-white text-decoration-none">
+
+                            ID
+
+                            <span th:if="${sort == 'id,asc'}">
+                                ↑
+                            </span>
+
+                            <span th:if="${sort == 'id,desc'}">
+                                ↓
+                            </span>
+
+                        </a>
+
+                    </th>
+
+
+                    <!-- ==================== NAME ==================== -->
+                    <th>
+
+                        <a th:href="@{/students(
+                                sort=${sort == 'name,asc' ? 'name,desc' : 'name,asc'}
+                           )}"
+                           class="text-white text-decoration-none">
+
+                            Họ tên
+
+                            <span th:if="${sort == 'name,asc'}">
+                                ↑
+                            </span>
+
+                            <span th:if="${sort == 'name,desc'}">
+                                ↓
+                            </span>
+
+                        </a>
+
+                    </th>
+
+
+                    <!-- ==================== EMAIL ==================== -->
+                    <th>
+
+                        <a th:href="@{/students(
+                                sort=${sort == 'email,asc' ? 'email,desc' : 'email,asc'}
+                           )}"
+                           class="text-white text-decoration-none">
+
+                            Email
+
+                            <span th:if="${sort == 'email,asc'}">
+                                ↑
+                            </span>
+
+                            <span th:if="${sort == 'email,desc'}">
+                                ↓
+                            </span>
+
+                        </a>
+
+                    </th>
+
+
+                    <!-- ==================== AGE ==================== -->
+                    <th>
+
+                        <a th:href="@{/students(
+                                sort=${sort == 'age,asc' ? 'age,desc' : 'age,asc'}
+                           )}"
+                           class="text-white text-decoration-none">
+
+                            Tuổi
+
+                            <span th:if="${sort == 'age,asc'}">
+                                ↑
+                            </span>
+
+                            <span th:if="${sort == 'age,desc'}">
+                                ↓
+                            </span>
+
+                        </a>
+
+                    </th>
+
+
+                    <!-- ==================== MAJOR ==================== -->
+                    <th>
+
+                        <a th:href="@{/students(
+                                sort=${sort == 'major,asc' ? 'major,desc' : 'major,asc'}
+                           )}"
+                           class="text-white text-decoration-none">
+
+                            Chuyên ngành
+
+                            <span th:if="${sort == 'major,asc'}">
+                                ↑
+                            </span>
+
+                            <span th:if="${sort == 'major,desc'}">
+                                ↓
+                            </span>
+
+                        </a>
+
+                    </th>
+
+
+                    <!-- ==================== GPA ==================== -->
+                    <th>
+
+                        <a th:href="@{/students(
+                                sort=${sort == 'gpa,asc' ? 'gpa,desc' : 'gpa,asc'}
+                           )}"
+                           class="text-white text-decoration-none">
+
+                            GPA
+
+                            <span th:if="${sort == 'gpa,asc'}">
+                                ↑
+                            </span>
+
+                            <span th:if="${sort == 'gpa,desc'}">
+                                ↓
+                            </span>
+
+                        </a>
+
+                    </th>
+
+
+                    <!-- ==================== ACTION ==================== -->
+                    <th class="text-center">
+                        Thao tác
+                    </th>
+
+                </tr>
+
+                </thead>
+
+
+                <!-- ==================== TABLE BODY ==================== -->
+                <tbody>
+
+                <tr th:each="student, stat : ${students}">
+
+                    <!-- STT -->
+                    <td th:text="${stat.count}">
+                        1
+                    </td>
+
+
+                    <!-- ID -->
+                    <td th:text="${student.id}">
+                        1
+                    </td>
+
+
+                    <!-- NAME -->
+                    <td>
+
+                        <a th:href="@{/students/{id}(id=${student.id})}"
+                           th:text="${student.name}"
+                           class="text-decoration-none fw-semibold">
+
+                            Tên sinh viên
+
+                        </a>
+
+                    </td>
+
+
+                    <!-- EMAIL -->
+                    <td th:text="${student.email}">
+                        email@example.com
+                    </td>
+
+
+                    <!-- AGE -->
+                    <td th:text="${student.age}">
+                        20
+                    </td>
+
+
+                    <!-- MAJOR -->
+                    <td>
+
+                        <span class="badge bg-secondary"
+                              th:text="${student.major}">
+
+                            CNTT
+
+                        </span>
+
+                    </td>
+
+
+                    <!-- GPA -->
+                    <td>
+
+                        <span
+                                th:classappend="${student.gpa >= 3.5}
+                                    ? 'gpa-high'
+                                    : (${student.gpa >= 2.5}
+                                        ? 'gpa-mid'
+                                        : 'gpa-low')"
+
+                                th:text="${#numbers.formatDecimal(
+                                    student.gpa,
+                                    1,
+                                    1
+                                )}">
+
+                            3.5
+
+                        </span>
+
+                    </td>
+
+
+                    <!-- ACTION -->
+                    <td class="text-center">
+
+                        <!-- VIEW -->
+                        <a th:href="@{/students/{id}(id=${student.id})}"
+                           class="btn btn-sm btn-outline-info me-1"
+                           title="Chi tiết">
+
+                            <i class="bi bi-eye"></i>
+
+                        </a>
+
+
+                        <!-- EDIT -->
+                        <a th:href="@{/students/{id}/edit(id=${student.id})}"
+                           class="btn btn-sm btn-outline-warning me-1"
+                           title="Sửa">
+
+                            <i class="bi bi-pencil"></i>
+
+                        </a>
+
+
+                        <!-- DELETE -->
+                        <form
+                                th:action="@{/students/{id}/delete(id=${student.id})}"
+                                method="post"
+                                class="d-inline"
+                                th:data-name="${student.name}"
+                                onsubmit="return confirm(
+                                    'Xóa sinh viên ' +
+                                    this.dataset.name +
+                                    '?'
+                                )">
+
+                            <button type="submit"
+                                    class="btn btn-sm btn-outline-danger"
+                                    title="Xóa">
+
+                                <i class="bi bi-trash"></i>
+
+                            </button>
+
+                        </form>
+
+                    </td>
+
+                </tr>
+
+                </tbody>
+
+            </table>
+
         </div>
-    </form>
+
+    </div>
+
+
+    <!-- ==================== TOTAL ==================== -->
+    <div th:unless="${#lists.isEmpty(students)}"
+         class="text-muted mt-2">
+
+        <small>
+
+            Tổng:
+
+            <!-- Khi đang pagination -->
+            <strong th:if="${page != null}"
+                    th:text="${page.totalElements}">
+                0
+            </strong>
+
+            <!-- Khi không pagination -->
+            <strong th:if="${page == null}"
+                    th:text="${#lists.size(students)}">
+                0
+            </strong>
+
+            sinh viên
+
+        </small>
+
+    </div>
+
+
+    <!-- ==================== PAGINATION ==================== -->
+    <div th:if="${page != null && page.totalPages > 1}"
+         class="mt-4 mb-4">
+
+        <nav aria-label="Student pagination">
+
+            <ul class="pagination justify-content-center">
+
+
+                <!-- ==================== PREVIOUS ==================== -->
+                <li class="page-item"
+                    th:classappend="${page.first} ? 'disabled'">
+
+                    <!-- Có trang trước -->
+                    <a th:if="${!page.first}"
+                       class="page-link"
+                       th:href="@{/students(
+                           page=${page.number - 1},
+                           size=${page.size}
+                       )}">
+
+                        Trước
+
+                    </a>
+
+                    <!-- Đang ở trang đầu -->
+                    <span th:if="${page.first}"
+                          class="page-link">
+
+                        Trước
+
+                    </span>
+
+                </li>
+
+
+                <!-- ==================== PAGE NUMBERS ==================== -->
+                <li class="page-item"
+                    th:each="i : ${#numbers.sequence(
+                        0,
+                        page.totalPages - 1
+                    )}"
+                    th:classappend="${i == page.number} ? 'active'">
+
+                    <a class="page-link"
+                       th:href="@{/students(
+                           page=${i},
+                           size=${page.size}
+                       )}"
+                       th:text="${i + 1}">
+
+                        1
+
+                    </a>
+
+                </li>
+
+
+                <!-- ==================== NEXT ==================== -->
+                <li class="page-item"
+                    th:classappend="${page.last} ? 'disabled'">
+
+                    <!-- Có trang sau -->
+                    <a th:if="${!page.last}"
+                       class="page-link"
+                       th:href="@{/students(
+                           page=${page.number + 1},
+                           size=${page.size}
+                       )}">
+
+                        Sau
+
+                    </a>
+
+                    <!-- Đang ở trang cuối -->
+                    <span th:if="${page.last}"
+                          class="page-link">
+
+                        Sau
+
+                    </span>
+
+                </li>
+
+            </ul>
+
+        </nav>
+
+
+        <!-- ==================== PAGE INFO ==================== -->
+        <div class="text-center text-muted">
+
+            Trang
+
+            <strong th:text="${page.number + 1}">
+                1
+            </strong>
+
+            /
+
+            <strong th:text="${page.totalPages}">
+                1
+            </strong>
+
+            —
+
+            Tổng
+
+            <strong th:text="${page.totalElements}">
+                0
+            </strong>
+
+            sinh viên
+
+        </div>
+
+    </div>
 
 </section>
 </body>
