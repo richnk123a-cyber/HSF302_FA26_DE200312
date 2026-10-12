@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- th:replace: thẻ <th:block> này BỊ THAY bằng fragment -->
+    <th:block th:replace="~{fragments/layout :: commonHead('Trang chủ')}"></th:block>
+</head>
+<body>
+
+<!-- th:insert: GIỮ thẻ <div>, chèn fragment VÀO TRONG (minh hoạ khác biệt) -->
+<div th:insert="~{fragments/layout :: navbar('home')}"></div>
+
+<main class="container">
+    <th:block th:replace="~{fragments/layout :: alerts}"></th:block>
+
+    <div class="p-4 bg-white rounded shadow-sm mb-4">
+        <h1 class="h3">Chào mừng đến với Spring Boot + Thymeleaf!</h1>
+        <p class="text-muted mb-0">Chọn chức năng bên dưới hoặc trên menu.</p>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-md-3" th:each="item : ${ {'sinhvien','sanpham/them','khoahoc','dangky'} }">
+            <a class="card card-body text-decoration-none h-100"
+               th:href="@{'/' + ${item}}" th:text="${item}">link</a>
+        </div>
+    </div>
+</main>
+
+<!-- th:replace: thẻ <div> BỊ THAY hoàn toàn bằng <footer> -->
+<div th:replace="~{fragments/layout :: footer}"></div>
+<th:block th:replace="~{fragments/layout :: scripts}"></th:block>
+</body>
+</html>
