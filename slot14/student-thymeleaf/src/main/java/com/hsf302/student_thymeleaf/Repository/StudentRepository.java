@@ -12,8 +12,11 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     // TODO 19: Khai báo các derived query sau (KHÔNG cần viết thân hàm):
     //  19.1. Tìm theo mã SV HOẶC họ tên chứa từ khóa, không phân biệt hoa thường, sắp xếp theo id tăng dần
     //        → findByStudentCodeContainingIgnoreCaseOrFullNameContainingIgnoreCaseOrderByIdAsc(String code, String name)
+    List<Student> findByStudentCodeContainingIgnoreCaseOrFullNameContainingIgnoreCaseOrderByIdAsc(String code, String name);
     //  19.2. Kiểm tra mã SV đã tồn tại (dùng khi THÊM MỚI)
     //        → existsByStudentCodeIgnoreCase(String studentCode)
+    List<Student> existsByStudentCodeIgnoreCase(String studentCode);
     //  19.3. Kiểm tra mã SV đã tồn tại ở sinh viên KHÁC (dùng khi CẬP NHẬT – bỏ qua chính nó)
     //        → existsByStudentCodeIgnoreCaseAndIdNot(String studentCode, Long id)
+    List<Student> existsByStudentCodeIgnoreCaseAndIdNot(String studentCode, Long id);
 }
