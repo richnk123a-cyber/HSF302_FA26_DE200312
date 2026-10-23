@@ -1,4 +1,4 @@
-package com.hsf302.student_thymeleaf.Repository;
+package com.hsf302.student_thymeleaf.repository;
 
 import com.hsf302.student_thymeleaf.entity.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,8 +15,8 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     List<Student> findByStudentCodeContainingIgnoreCaseOrFullNameContainingIgnoreCaseOrderByIdAsc(String code, String name);
     //  19.2. Kiểm tra mã SV đã tồn tại (dùng khi THÊM MỚI)
     //        → existsByStudentCodeIgnoreCase(String studentCode)
-    List<Student> existsByStudentCodeIgnoreCase(String studentCode);
+    boolean existsByStudentCodeIgnoreCase(String studentCode);
     //  19.3. Kiểm tra mã SV đã tồn tại ở sinh viên KHÁC (dùng khi CẬP NHẬT – bỏ qua chính nó)
     //        → existsByStudentCodeIgnoreCaseAndIdNot(String studentCode, Long id)
-    List<Student> existsByStudentCodeIgnoreCaseAndIdNot(String studentCode, Long id);
+    boolean existsByStudentCodeIgnoreCaseAndIdNot(String studentCode, Long id);
 }
