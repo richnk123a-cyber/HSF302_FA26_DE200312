@@ -35,13 +35,13 @@ public class Student {
             regexp = "^(SE|SS|SA|HE)\\d{6}$",
             message = "Mã SV phải có dạng SE/SS/SA/HE + 6 chữ số (VD: SE180001)"
     )
-    @Column(name = "studentCode", nullable = false, length = 8, unique = true)
+    @Column(name = "student_code", nullable = false, length = 8, unique = true)
     private String studentCode;
 
     @NotBlank(message = "Họ tên không được để trống")
     @Size(min = 2, max = 50, message = "Họ tên phải từ 2 đến 50 ký tự")
     @Nationalized
-    @Column(name = "fullName", nullable = false, length = 50)
+    @Column(name = "full_name", nullable = false, length = 50)
     private String fullName;
 
     @NotBlank(message = "Email không được để trống")
@@ -57,7 +57,7 @@ public class Student {
     @NotNull(message = "Ngày sinh không được để trống")
     @Past(message = "Ngày sinh phải là ngày trong quá khứ")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @Column(name = "dateOfBirth", nullable = false)
+    @Column(name = "date_of_birth", nullable = false)
     private LocalDate dateOfBirth;
 
     @NotNull(message = "GPA không được để trống")
