@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<!-- TODO 9.1: Thêm layout:decorate="~{layout/main}" vào thẻ <html> -->
+<head>
+    <title>Danh sách sinh viên</title>
+</head>
+<body>
+<section layout:fragment="content">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="mb-0">Danh sách sinh viên</h2>
+        <a href="#" class="btn btn-primary">+ Thêm sinh viên</a>  <!-- TODO 9.2: th:href -->
+    </div>
+
+    <!-- TODO 9.3: Form tìm kiếm GET tới /students; ô input name="keyword" giữ lại giá trị ${keyword} -->
+    <form class="row g-2 mb-3">
+        <div class="col-md-6">
+            <input type="text" name="keyword" class="form-control"
+                   placeholder="Tìm theo mã SV hoặc họ tên...">
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-outline-primary">Tìm kiếm</button>
+        </div>
+    </form>
+    <!-- TODO 9.4: Nếu keyword không rỗng (#strings.isEmpty) → hiển thị:
+                   "Tìm thấy X sinh viên cho từ khóa: <keyword>" (dùng literal substitution |...|) -->
+
+    <!-- TODO 10: 3 thẻ thống kê
+         - Tổng số sinh viên : ${totalStudents}
+         - GPA trung bình    : #numbers.formatDecimal(avgGpa, 1, 2)
+         - Đang học          : #lists.size(students.?[active])  (collection selection) -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card stat-card text-bg-primary"><div class="card-body">
+                <div>Tổng số sinh viên</div><div class="value">0</div>
+            </div></div>
+        </div>
+        <div class="col-md-4">
+            <div class="card stat-card text-bg-success"><div class="card-body">
+                <div>GPA trung bình</div><div class="value">0.00</div>
+            </div></div>
+        </div>
+        <div class="col-md-4">
+            <div class="card stat-card text-bg-info"><div class="card-body">
+                <div>Đang học</div><div class="value">0</div>
+            </div></div>
+        </div>
+    </div>
+
+    <!-- TODO 13.1: Nếu danh sách rỗng → alert-warning "Không có sinh viên nào."
+                    và ẩn bảng (th:if / th:unless + #lists.isEmpty) -->
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle bg-white">
+            <thead class="table-dark">
+            <tr>
+                <th>#</th><th>Mã SV</th><th>Họ tên</th><th>Email</th><th>Ngày sinh</th>
+                <th>Tuổi</th><th>Ngành</th><th>GPA</th><th>Xếp loại</th><th>Trạng thái</th><th>Thao tác</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- TODO 11: th:each="s, stat : ${students}"
+                 - #            : stat.count
+                 - Mã SV        : s.studentCode
+                 - Họ tên       : IN HOA bằng #strings.toUpperCase
+                 - Email        : s.email
+                 - Ngày sinh    : #temporals.format(..., 'dd/MM/yyyy')
+                 - Tuổi         : s.age  (thuộc tính tính toán)
+                 - GPA          : #numbers.formatDecimal(..., 1, 2)
+                 TODO 12:
+                 - Ngành        : tra Map → ${majors[s.major]}
+                 - Xếp loại     : th:switch="${s.rank}" → badge màu
+                                  Xuất sắc=success, Giỏi=primary, Khá=info, Trung bình=warning, * = danger
+                 - Trạng thái   : ternary → 'Đang học' (badge success) / 'Bảo lưu' (badge secondary)
+                 - Dòng có GPA < 5 (dùng 'lt') → th:classappend 'table-danger'
+                 TODO 13.2:
+                 - Nút Xem / Sửa: th:href="@{/students/{id}(id=${s.id})}" và ".../{id}/edit"
+                 - Nút Xóa      : form POST th:action="@{/students/{id}/delete(id=${s.id})}" -->
+            <tr>
+                <td>1</td><td>SE180001</td><td>NGUYỄN VĂN A</td><td>a@fpt.edu.vn</td>
+                <td>01/01/2004</td><td>22</td><td>Kỹ thuật phần mềm</td><td>8.00</td>
+                <td><span class="badge text-bg-primary">Giỏi</span></td>
+                <td><span class="badge text-bg-success">Đang học</span></td>
+                <td>
+                    <a href="#" class="btn btn-sm btn-outline-info">Xem</a>
+                    <a href="#" class="btn btn-sm btn-outline-warning">Sửa</a>
+                    <button class="btn btn-sm btn-outline-danger">Xóa</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- TODO 8.1: Dùng layout:title-pattern để tiêu đề tab có dạng:
+                   "<Tiêu đề trang con> | Student Manager" -->
+    <title>Student Manager</title>
+
+    <!-- TODO 8.2: Link Bootstrap OFFLINE + style.css bằng th:href="@{...}" -->
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand" href="#">Student Manager</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="mainNav">
+            <ul class="navbar-nav ms-auto">
+                <!-- TODO 8.3: th:href tới /students và /students/new
+                               th:classappend="... ? 'active'" dựa vào ${activeMenu} ('list' / 'new') -->
+                <li class="nav-item"><a class="nav-link" href="#">Danh sách</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Thêm mới</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<main class="container my-4 flex-grow-1">
+    <!-- TODO 8.4: Hiển thị flash message ${successMessage} (alert-success)
+                   và ${errorMessage} (alert-danger), chỉ khi có giá trị (th:if),
+                   có nút đóng (btn-close, data-bs-dismiss="alert") -->
+
+    <!-- TODO 8.5: Vùng nội dung để trang con thay thế: layout:fragment="content" -->
+</main>
+
+<footer class="bg-dark text-white-50 text-center py-3">
+    <!-- TODO 8.6: Hiển thị năm hiện tại bằng #temporals -->
+    &copy; <span>2026</span> HSF302 – Student Manager
+</footer>
+
+<!-- TODO 8.7: Script Bootstrap OFFLINE (bootstrap.bundle.min.js) -->
+</body>
+</html>
