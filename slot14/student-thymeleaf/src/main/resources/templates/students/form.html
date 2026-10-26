@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main}">
+<head>
+    <!-- TODO 15.1: Tiêu đề động: id null → 'Thêm sinh viên', ngược lại 'Cập nhật sinh viên' -->
+    <title>Form sinh viên</title>
+</head>
+<body>
+<section layout:fragment="content">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h4 class="mb-0">Thêm sinh viên mới</h4> <!-- TODO 15.2: tiêu đề động -->
+                </div>
+                <div class="card-body">
+
+                    <!-- TODO 15.3: th:action="@{/students/save}" th:object="${student}" method="post"
+                                    (thêm novalidate để tắt validate HTML5 → thấy rõ validate server) -->
+                    <form>
+                        <!-- TODO 15.4: hidden id: th:field="*{id}" -->
+
+                        <!-- TODO 16.1: Khối tổng hợp lỗi: th:if="${#fields.hasErrors('*')}"
+                                        liệt kê bằng th:each="err : ${#fields.errors('*')}" -->
+
+                        <div class="row g-3">
+                            <!-- TODO 15.5 + 16.2: Với MỖI ô nhập:
+                                 - th:field="*{tênField}"
+                                 - th:errorclass="is-invalid"
+                                 - <div class="invalid-feedback" th:if="${#fields.hasErrors('tênField')}"
+                                        th:errors="*{tênField}"></div> -->
+                            <div class="col-md-6">
+                                <label for="studentCode" class="form-label">Mã sinh viên <span class="text-danger">*</span></label>
+                                <input type="text" id="studentCode" class="form-control" placeholder="VD: SE180001">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="fullName" class="form-label">Họ tên <span class="text-danger">*</span></label>
+                                <input type="text" id="fullName" class="form-control">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+                                <input type="email" id="email" class="form-control">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="dateOfBirth" class="form-label">Ngày sinh <span class="text-danger">*</span></label>
+                                <input type="date" id="dateOfBirth" class="form-control">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="gpa" class="form-label">GPA (0 - 10) <span class="text-danger">*</span></label>
+                                <!-- dùng type="text" để có thể test lỗi type mismatch (nhập chữ) -->
+                                <input type="text" id="gpa" class="form-control">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="major" class="form-label">Ngành <span class="text-danger">*</span></label>
+                                <!-- TODO 15.6: option lặp từ Map ${majors}: value = key, text = "key - value" -->
+                                <select id="major" class="form-select">
+                                    <option value="">-- Chọn ngành --</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <!-- TODO 15.7: checkbox th:field="*{active}";
+                                                label th:for="${#ids.prev('active')}" -->
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox">
+                                    <label class="form-check-label">Đang học</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 d-flex gap-2">
+                            <!-- TODO 15.8: text nút động: 'Thêm mới' / 'Lưu thay đổi' -->
+                            <button type="submit" class="btn btn-primary">Lưu</button>
+                            <a href="#" class="btn btn-secondary">Hủy</a>  <!-- th:href="@{/students}" -->
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>
