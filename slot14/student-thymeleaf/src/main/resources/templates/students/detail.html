@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main}">
+<head>
+    <title>Chi tiết sinh viên</title>
+</head>
+<body>
+<section layout:fragment="content">
+    <div class="card shadow-sm">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <!-- TODO 14.1: Tiêu đề "<studentCode> - <fullName>" bằng literal substitution -->
+            <h4 class="mb-0">SE180001 - Nguyễn Văn A</h4>
+            <!-- TODO 14.2: Badge trạng thái: th:classappend + ternary -->
+            <span class="badge text-bg-success">Đang học</span>
+        </div>
+        <div class="card-body">
+            <dl class="row mb-0">
+                <!-- TODO 14.3: Hiển thị bằng ${student.xxx}:
+                     - Mã SV, Họ tên
+                     - Email: link mailto (th:href="|mailto:${...}|"); null → 'Chưa cập nhật' (Elvis ?:)
+                     - Ngày sinh: "dd/MM/yyyy (X tuổi)"
+                     - Ngành: "SE - Kỹ thuật phần mềm" (mã + tra Map majors)
+                     - GPA: 2 chữ số thập phân + " / 10"
+                     - Xếp loại: ${student.rank}
+                     - Học bổng: GPA >= 8.0 (dùng 'ge') VÀ đang học → "Đủ điều kiện xét học bổng",
+                                 ngược lại "Không đủ điều kiện" -->
+                <dt class="col-sm-3">Mã sinh viên</dt>
+                <dd class="col-sm-9">SE180001</dd>
+            </dl>
+
+            <!-- TODO 14.4 (bonus): Viết lại "Họ tên" và "Email" bằng th:object + *{...}
+                                    để so sánh với ${...} -->
+        </div>
+        <div class="card-footer">
+            <!-- TODO 14.5: th:href cho 2 nút -->
+            <a href="#" class="btn btn-secondary">← Quay lại</a>
+            <a href="#" class="btn btn-warning">Sửa</a>
+        </div>
+    </div>
+</section>
+</body>
+</html>
