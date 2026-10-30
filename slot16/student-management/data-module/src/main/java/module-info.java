@@ -1,8 +1,7 @@
 module vonguyenkhanh.example.datamodule {
-    requires javafx.controls;
-    requires javafx.fxml;
 
+    requires jakarta.persistence;
+    requires org.hibernate.orm.core;
 
-    opens vonguyenkhanh.example.datamodule to javafx.fxml;
-    exports vonguyenkhanh.example.datamodule;
+    exports vonguyenkhanh.example.datamodule.pojo;
 }
