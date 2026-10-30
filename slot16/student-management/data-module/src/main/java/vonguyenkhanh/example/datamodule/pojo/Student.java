@@ -78,7 +78,7 @@ public class Student {
         this.age = age;
     }
 
-    // TODO 1.8: toString() "id | name | email | age"
+    // TODO 1.8: toString() "id | name | email | age "
     @Override
     public String toString() {
         return id + " | " + name + " | " + email + " | " + age;
