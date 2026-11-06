@@ -19,7 +19,7 @@ import java.util.Optional;
 @Service
 public class DeviceServiceImpl implements DeviceService{
 
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private final DeviceRepository deviceRepository;
     private final CategoryRepository categoryRepository;
 
@@ -49,14 +49,14 @@ public class DeviceServiceImpl implements DeviceService{
         if (deviceDTO.getDeviceCode() != null && !deviceDTO.getDeviceCode().isBlank() && !bindingResult.hasFieldErrors("deviceCode")) { //Lưu ý tên trường cần kiểm tra
             Optional<Device> existing = deviceRepository.findByDeviceCode(deviceDTO.getDeviceCode());
             if (existing.isPresent()) {
-                bindingResult.addError(new FieldError("deviceDTO", "deviceCode", "Device Code already exists"));
+                bindingResult.addError(new FieldError("DeviceDTO", "deviceCode", "Device Code already exists"));
             }
         }
 
         //Category must exist in the database
         if(deviceDTO.getCategoryId() != null) {
             if(!categoryRepository.existsById(deviceDTO.getCategoryId())) {
-                bindingResult.addError(new FieldError("deviceDTO", "categoryId", "Selected category does not exist"));
+                bindingResult.addError(new FieldError("DeviceDTO", "categoryId", "Selected category does not exist"));
             }
         }
 
@@ -66,10 +66,10 @@ public class DeviceServiceImpl implements DeviceService{
             try {
                 LocalDate installationDate = LocalDate.parse(deviceDTO.getInstallationDate().trim(), DATE_FORMATTER);
                 if(!installationDate.isAfter(LocalDate.now())) {
-                    bindingResult.addError(new FieldError("deviceDTO", "installationDate", "Installation date must be a future date"));
+                    bindingResult.addError(new FieldError("DeviceDTO", "installationDate", "Installation date must be a future date"));
                 }
             } catch (DateTimeParseException e) {
-                bindingResult.addError(new FieldError("deviceDTO", "installationDate", "Invalid date format. Please use dd-MM-yyyy"));
+                bindingResult.addError(new FieldError("DeviceDTO", "installationDate", "Invalid date format. Please use dd/MM/yyyy"));
             }
         }
     }

@@ -41,12 +41,13 @@ public class DeviceController {
         String keyword = deviceName == null ? "" : deviceName.trim();
         List<Device> devices = (keyword == null || keyword.isEmpty()) ? deviceService.getAllDevices() : deviceService.searchByName(keyword);
         model.addAttribute("devices", devices);
+        model.addAttribute("deviceName", keyword);
         model.addAttribute("keyword", keyword);
         return "device-list";
     }
 
     // Q2 - Delete function (Screen 2 confirm handled in device-list.html via modal)
-    @PostMapping("/delete/{id}")
+    @RequestMapping(value = "/delete/{id}", method = {RequestMethod.POST, RequestMethod.GET})
     public String delete(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
         try {
             deviceService.deleteDevice(id);
